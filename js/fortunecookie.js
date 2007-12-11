@@ -1,10 +1,10 @@
-// FLV Tagger
+// fortunecookie.js
 // Created by Philip Guo on 2007-12-10
 
 // The file to play:
 // If you ever load a different file, make sure to change this variable
 // because that's what's gonna be written into the database!
-var flv_filename = "test-flv-files/SecondFlashFLVTest.flv";
+var flv_filename = "etc/FlashTest_2.flv";
 
 var timeElapsed;
 var timeRemaining;
@@ -41,17 +41,14 @@ var completedEventsHash = new Array();
 
 
 $(document).ready(function() {
-  var so = new SWFObject('mediaplayer.swf','mpl','800','650','8');
+  var so = new SWFObject('swf/mediaplayer.swf','mpl','800','650','8');
   
   so.addParam("allowfullscreen", "true");
-  so.addVariable("file", "test-flv-files/SecondFlashFLVTest.flv");
+  so.addVariable("file", flv_filename);
   so.addVariable("enablejs", "true");
   so.addVariable("javascriptid", "mpl");
   so.addVariable("displayheight", "600");
   so.write('player');
-
-  // weird Firebug error, so ignore it ...
-  //var mmw = new SWFMacMouseWheel(so);
  
   $("#tagOneShot").click(function() {tagOneShotEvent();});
   $("#tagStartEvent").click(function() {tagStartEvent();});
@@ -118,7 +115,7 @@ function thisMovie(movieName) {
 // Use some AJAX action to store this event in the database
 // along with the author's name and the filename
 function storeTagEventInDB(evt) {
-  $.post("storeTagData.php", {authorName: evt.authorName,
+  $.post("db/storeTagData.php", {authorName: evt.authorName,
                               filename: flv_filename,
                               eventType: evt.eventType,
                               eventSubType: evt.eventSubType,
@@ -135,7 +132,7 @@ function storeTagEventInDB(evt) {
 
 // AJAX action again!
 function fetchAllTagEventsFromDB() {
-  $.get("fetchTagData.php", {filename: flv_filename},
+  $.get("db/fetchTagData.php", {filename: flv_filename},
         function (responseJSONStr) {
           // responseJSON should be an array of maps, each of which has
           // keys that correspond to the fields of TagEvent
@@ -350,7 +347,7 @@ function DeleteCompletedEvent(completedEventID) {
   myEvt = completedEventsHash[completedEventID];
   //console.log(myEvt.sqlUniqueID);
 
-  $.post("deleteTagEntry.php", {uniqueID: myEvt.sqlUniqueID}, function () {});
+  $.post("db/deleteTagEntry.php", {uniqueID: myEvt.sqlUniqueID}, function () {});
 
   fetchAllTagEventsFromDB();
 }

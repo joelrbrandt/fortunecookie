@@ -4,7 +4,7 @@
 // The file to play:
 // If you ever load a different file, make sure to change this variable
 // because that's what's gonna be written into the database!
-var flvURL = "http://fortunecookie.stanford.edu/dev/fortunecookie/etc/FlashTest_2.flv";
+var flvURL = "http://fortunecookie.stanford.edu/dev/fortunecookie/etc/s1.flv";
 
 var timeElapsed;
 var timeRemaining;
@@ -40,22 +40,27 @@ var completedEventsHash = new Array();
 
 
 $(document).ready(function() {
-    so = new SWFObject('swf/mediaplayer.swf','mpl','800','650','8');
+    var so = new SWFObject('swf/mediaplayer.swf','mpl','800','620','8');
     
     so.addParam("allowfullscreen", "true");
+    so.addParam("allowscriptaccess", "always");
+
+    so.addVariable('displayheight', '600'); // height of controller bar is 20
+    so.addVariable('displaywidth', '800');
+    so.addVariable('screencolor', '0xFFFFFF');
+    so.addVariable('autostart', 'true');
     so.addVariable("file", flvURL);
     so.addVariable("enablejs", "true");
     so.addVariable("javascriptid", "mpl");
-    so.addVariable("displayheight", "600");
+
     so.write('player');
-    
+
     $("#tagOneShot").click(function() {tagOneShotEvent();});
     $("#tagStartEvent").click(function() {tagStartEvent();});
 
     fetchAllTagEventsFromDB();
 })
 
-// Only works in Firebug
 function assert(expr) {
     if (!expr) {
 	alert("ASSERTION FAILURE, BITCH!!!");
@@ -191,10 +196,10 @@ function fetchAllTagEventsFromDB() {
 		   newEventDiv.append(myEvt.authorName);
 		   newEventDiv.append('<br/>');
 		   newEventDiv.append('Start: ' + secToMinSecStr(myEvt.startTime));
-		   newEventDiv.append(' <input type="button" onclick="JumpToTimePaused(' + myEvt.startTime + ');" value="Goto">')
+		   newEventDiv.append(' <input type="button" onclick="jumpToTimePlaying(' + myEvt.startTime + ');" value="Goto">')
 		   newEventDiv.append('<br/>');
 		   newEventDiv.append('End: ' + secToMinSecStr(myEvt.endTime));
-		   newEventDiv.append(' <input type="button" onclick="JumpToTimePaused(' + myEvt.endTime + ');" value="Goto">')
+		   newEventDiv.append(' <input type="button" onclick="jumpToTimePlaying(' + myEvt.endTime + ');" value="Goto">')
 		   newEventDiv.append('<br/>');
 		   newEventDiv.append(myEvt.eventType + ': ' + myEvt.eventSubType + ' (' + myEvt.eventID + ')');
 		   newEventDiv.append('<br/>');
@@ -282,7 +287,7 @@ function tagStartEvent() {
 
     // sorry for the ugly escaped quotes :0
     newEventDiv.append('Start: ' + secToMinSecStr(startTime));
-    newEventDiv.append(' <input type="button" onclick="JumpToTimePaused(' + startTime + ');" value="Goto">')
+    newEventDiv.append(' <input type="button" onclick="jumpToTimePlaying(' + startTime + ');" value="Goto">')
     newEventDiv.append('<br/>');
     newEventDiv.append(eventType + ': ' + eventSubType + ' (' + eventID + ')');
     newEventDiv.append('<br/>');
@@ -309,10 +314,28 @@ function TagEvent(eventType, eventSubType, eventID, annotation, startTime, endTi
 
 TagEvent.prototype = new TagEvent
 
+function forceStop() {
+    if (isPlaying) {
+	sendEvent('playpause');
+	setTimeout('forceStop()', 100);
+    }
+}
+
+
+function jumpToTimePlaying(timeSecs) {
+    // keyframes are every 5 seconds, so round down so we don't miss it:
+    var startTime = parseInt(timeSecs/5) * 5;
+
+    sendEvent('scrub', startTime);
+
+    if (!isPlaying) {
+	sendEvent('playpause');
+    }
+}
 
 // For some reason, we need to pause before jumping or else we won't
 // land accurately on the desired time
-function JumpToTimePaused(timeSecs) {
+function jumpToTimePaused(timeSecs) {
     // Pause the movie if we're not already paused,
     // so that we can accurately jump to timeSecs
     if (isPlaying) {

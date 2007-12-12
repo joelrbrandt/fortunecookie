@@ -1,23 +1,29 @@
 <?php
-
 // Pass in the uniqueID to delete via $_POST[]
 
-$dbhost = 'localhost';
-$dbuser = 'FLVTagger';
-$dbpass = 'FLVTagger';
-$dbname = 'flvtagger'; // stupid lowercase names!!!???
+require_once('dbLibrary.php');
+$result = Array();
 
-$conn = mysql_connect($dbhost, $dbuser, $dbpass) or die                      ('Error connecting to mysql');
+try {
+  $dbh = connectToDb();
+  $stmt = $dbh->prepare("DELETE FROM FLVTags where uniqueID=?");
+  if ($stmt->execute(Array($_POST['uniqueID']))) {
+        $result['success'] = True;
+  }
+  else {
+    $result['error'] = "Error executing SQL statement";
+    $result['success'] = False;
+  }
+}
+catch (Exception $e) {
+  $result['error'] = "PDOException: " . $e->getMessage();
+  $result['success'] = False;
+}
 
-mysql_select_db($dbname);
+$stmt = null;
+$dbh = null;
 
-// TODO: there's gotta be a more elegant and less error-prone 
-// way to do this shit ...
-$query = sprintf("DELETE FROM FLVTags where uniqueID=%d;",
-                 $_POST['uniqueID']);
+echo json_encode($result);
 
-mysql_query($query, $conn);
-
-mysql_close($conn);
 ?>
 

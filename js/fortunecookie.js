@@ -4,7 +4,7 @@
 // The file to play:
 // If you ever load a different file, make sure to change this variable
 // because that's what's gonna be written into the database!
-var flv_filename = "etc/FlashTest_2.flv";
+var flvURL = "http://fortunecookie.stanford.edu/dev/fortunecookie/etc/FlashTest_2.flv";
 
 var timeElapsed;
 var timeRemaining;
@@ -18,11 +18,10 @@ var isPlaying = false;
 var globalUniqueID = 1;
 
 function createNewUniqueDivID() {
-  eventDivUniqueID = 'event_' + globalUniqueID;
-  globalUniqueID += 1;
-  return eventDivUniqueID;
+    eventDivUniqueID = 'event_' + globalUniqueID;
+    globalUniqueID += 1;
+    return eventDivUniqueID;
 }
-
 
 // Stores all the currently active events in the activeEvents div
 // 
@@ -41,254 +40,271 @@ var completedEventsHash = new Array();
 
 
 $(document).ready(function() {
-  var so = new SWFObject('swf/mediaplayer.swf','mpl','800','650','8');
-  
-  so.addParam("allowfullscreen", "true");
-  so.addVariable("file", flv_filename);
-  so.addVariable("enablejs", "true");
-  so.addVariable("javascriptid", "mpl");
-  so.addVariable("displayheight", "600");
-  so.write('player');
- 
-  $("#tagOneShot").click(function() {tagOneShotEvent();});
-  $("#tagStartEvent").click(function() {tagStartEvent();});
+    so = new SWFObject('swf/mediaplayer.swf','mpl','800','650','8');
+    
+    so.addParam("allowfullscreen", "true");
+    so.addVariable("file", flvURL);
+    so.addVariable("enablejs", "true");
+    so.addVariable("javascriptid", "mpl");
+    so.addVariable("displayheight", "600");
+    so.write('player');
+    
+    $("#tagOneShot").click(function() {tagOneShotEvent();});
+    $("#tagStartEvent").click(function() {tagStartEvent();});
 
-  fetchAllTagEventsFromDB();
+    fetchAllTagEventsFromDB();
 })
 
 // Only works in Firebug
 function assert(expr) {
-  if (!expr) {
-    console.error("ASSERTION FAILURE, BITCH!!!");
-  }
+    if (!expr) {
+	alert("ASSERTION FAILURE, BITCH!!!");
+    }
 }
 
 // these functions are caught by the JavascriptView object of the player.
 function sendEvent(typ,prm) {
-	thisMovie("mpl").sendEvent(typ,prm);
+    thisMovie("mpl").sendEvent(typ,prm);
 };
 
 // transforms time in seconds to a string 'minute:seconds'
 // there's probably a less retarded way to do this, but i'm satisficing ;) - pgbovine
 function secToMinSecStr(sec_str) {
-  minutes = Math.floor(sec_str / 60);
-  seconds = sec_str % 60;
-  if (seconds < 10) {
-    seconds = '0' + seconds
-  }
-  return minutes + ':' + seconds;
+    minutes = Math.floor(sec_str / 60);
+    seconds = sec_str % 60;
+    if (seconds < 10) {
+	seconds = '0' + seconds
+    }
+    return minutes + ':' + seconds;
 }
 
 function getUpdate(typ,pr1,pr2,pid) {
-  if( typ == "time") { 
-    timeElapsed = pr1; 
-    timeRemaining = pr2;
-    $("#currentTime").html(secToMinSecStr(timeElapsed));
-  }
-  else if (typ == "state") {
-    if (pr1 == 2) {
-      assert(!isPlaying);
-      isPlaying = true;
+    if( typ == "time") { 
+	timeElapsed = pr1; 
+	timeRemaining = pr2;
+	$("#currentTime").html(secToMinSecStr(timeElapsed));
     }
-    else if (pr1 == 0) {
-      isPlaying = false;
+    else if (typ == "state") {
+	if (pr1 == 2) {
+	    assert(!isPlaying);
+	    isPlaying = true;
+	}
+	else if (pr1 == 0) {
+	    isPlaying = false;
+	}
     }
-  }
 };
 
 // These functions are caught by the feeder object of the player.
 function loadFile(obj) { 
-  thisMovie("mpl").loadFile(obj);
+    thisMovie("mpl").loadFile(obj);
 };
 
 // This is a javascript handler for the player and is always needed.
 function thisMovie(movieName) {
     if(navigator.appName.indexOf("Microsoft") != -1) {
-    return window[movieName];
-  } else {
-    return document[movieName];
-  }
+	return window[movieName];
+    } else {
+	return document[movieName];
+    }
 };
 
+
+function parseResponseJSON(strJSON) {
+    var responseJSON = eval('(' + strJSON + ')');
+    if (responseJSON.success === undefined || responseJSON.success === false) {
+	// TODO: make this something other than alert
+	alert('crap broke: ' + responseJSON.error);
+	return null;
+    } 
+    else {
+	if (responseJSON.data === undefined) {
+	    return ([]);
+	} else {
+	    return responseJSON.data;
+	}
+    }
+
+}
 
 // argument: TagEvent instance
 // Use some AJAX action to store this event in the database
 // along with the author's name and the filename
 function storeTagEventInDB(evt) {
-  $.post("db/storeTagData.php", {authorName: evt.authorName,
-                              filename: flv_filename,
-                              eventType: evt.eventType,
-                              eventSubType: evt.eventSubType,
-                              eventID: evt.eventID,
-                              annotation: evt.annotation,
-                              startTime: evt.startTime,
-                              endTime: evt.endTime},
-                              function () {});
-
-  // refresh display after you store into db
-  fetchAllTagEventsFromDB();
+    $.post("db/storeTagData.php", {authorName: evt.authorName,
+				   filename: flvURL,
+				   eventType: evt.eventType,
+				   eventSubType: evt.eventSubType,
+				   eventID: evt.eventID,
+				   annotation: evt.annotation,
+				   startTime: evt.startTime,
+				   endTime: evt.endTime},
+           function(responseJSONStr) {
+	       parseResponseJSON(responseJSONStr);
+	       fetchAllTagEventsFromDB();
+	   });
 }
 
 
 // AJAX action again!
 function fetchAllTagEventsFromDB() {
-  $.get("db/fetchTagData.php", {filename: flv_filename},
-        function (responseJSONStr) {
-          // responseJSON should be an array of maps, each of which has
-          // keys that correspond to the fields of TagEvent
-          var responseJSON = eval('(' + responseJSONStr + ')');
+    $.post("db/fetchTagData.php", {filename: flvURL},
+           function (responseJSONStr) {
+	       responseJSON = parseResponseJSON(responseJSONStr);
+	       if (responseJSON === null)
+		   return;
 
-          // remove all elements within completedEvents div
-          // from the DOM
-          for (eventID in completedEventsHash) {
-            $('#' + eventID).remove();
-          }
-          // clear completedEventsHash in preparation for adding new
-          // data:
-          completedEventsHash = new Array();
+               // remove all elements within completedEvents div
+               // from the DOM
+               for (eventID in completedEventsHash) {
+		   $('#' + eventID).remove();
+               }
+               // clear completedEventsHash in preparation for adding new
+               // data:
+               completedEventsHash = new Array();
 
-          for (var i in responseJSON) {
-            var eventMap = responseJSON[i];
-            console.log(eventMap);
+               for (var i in responseJSON) {
+		   var eventMap = responseJSON[i];
+		   // console.log(eventMap);
 
-            assert(eventMap['filename'] == flv_filename);
-            
-            // Create a TagEvent object from eventMap and store it in
-            // completedEventsHash
-            // Use the minus 0 trick to coerce times into integer types
-            newEvt = new TagEvent(eventMap['eventType'], eventMap['eventSubType'], eventMap['eventID'], eventMap['annotation'], (eventMap['startTime'] - 0), (eventMap['endTime'] - 0), eventMap['authorName']);
+		   assert(eventMap['filename'] == flvURL);
+		   
+		   // Create a TagEvent object from eventMap and store it in
+		   // completedEventsHash
+		   // Use the minus 0 trick to coerce times into integer types
+		   newEvt = new TagEvent(eventMap['eventType'], eventMap['eventSubType'], eventMap['eventID'], eventMap['annotation'], (eventMap['startTime'] - 0), (eventMap['endTime'] - 0), eventMap['authorName']);
 
-            // populate this extra field so that we can properly DELETE
-            // entries from the database
-            newEvt.sqlUniqueID = eventMap['uniqueID'];
+		   // populate this extra field so that we can properly DELETE
+		   // entries from the database
+		   newEvt.sqlUniqueID = eventMap['uniqueID'];
 
-            // Create new event entry in completedEventsHash
-            eventDivUniqueID = createNewUniqueDivID();
-            completedEventsHash[eventDivUniqueID] = newEvt;
-          }
-        
+		   // Create new event entry in completedEventsHash
+		   eventDivUniqueID = createNewUniqueDivID();
+		   completedEventsHash[eventDivUniqueID] = newEvt;
+               }
+               
 
-          // display in completedEvents div
-          for (newEventID in completedEventsHash) {
-            var myEvt = completedEventsHash[newEventID];
-            newEventDiv = $('<div class="completedEvent" id="' + newEventID + '"></div>')
-            newEventDiv.append(myEvt.authorName);
-            newEventDiv.append('<br/>');
-            newEventDiv.append('Start: ' + secToMinSecStr(myEvt.startTime));
-            newEventDiv.append(' <input type="button" onclick="JumpToTimePaused(' + myEvt.startTime + ');" value="Goto">')
-            newEventDiv.append('<br/>');
-            newEventDiv.append('End: ' + secToMinSecStr(myEvt.endTime));
-            newEventDiv.append(' <input type="button" onclick="JumpToTimePaused(' + myEvt.endTime + ');" value="Goto">')
-            newEventDiv.append('<br/>');
-            newEventDiv.append(myEvt.eventType + ': ' + myEvt.eventSubType + ' (' + myEvt.eventID + ')');
-            newEventDiv.append('<br/>');
-            newEventDiv.append(myEvt.annotation);
-            newEventDiv.append('<br/>');
-            newEventDiv.append('<input type="button" onclick=\'DeleteCompletedEvent("' + newEventID + '");\' value="Delete Event">')
- 
-            $("#completedEvents").append(newEventDiv);
-          }
+               // display in completedEvents div
+               for (newEventID in completedEventsHash) {
+		   var myEvt = completedEventsHash[newEventID];
+		   newEventDiv = $('<div class="completedEvent" id="' + newEventID + '"></div>')
+		   newEventDiv.append(myEvt.authorName);
+		   newEventDiv.append('<br/>');
+		   newEventDiv.append('Start: ' + secToMinSecStr(myEvt.startTime));
+		   newEventDiv.append(' <input type="button" onclick="JumpToTimePaused(' + myEvt.startTime + ');" value="Goto">')
+		   newEventDiv.append('<br/>');
+		   newEventDiv.append('End: ' + secToMinSecStr(myEvt.endTime));
+		   newEventDiv.append(' <input type="button" onclick="JumpToTimePaused(' + myEvt.endTime + ');" value="Goto">')
+		   newEventDiv.append('<br/>');
+		   newEventDiv.append(myEvt.eventType + ': ' + myEvt.eventSubType + ' (' + myEvt.eventID + ')');
+		   newEventDiv.append('<br/>');
+		   newEventDiv.append(myEvt.annotation);
+		   newEventDiv.append('<br/>');
+		   newEventDiv.append('<input type="button" onclick=\'DeleteCompletedEvent("' + newEventID + '");\' value="Delete Event">')
+		   
+		   $("#completedEvents").append(newEventDiv);
+               }
 
-        });
+           });
 }
 
 
 function tagOneShotEvent() {
-  eventType = $("#eventType").val();
-  eventSubType = $("#eventSubType").val();
-  eventID = $("#eventID").val();
-  annotation = $("#annotation").val();
-  startTime = endTime = timeElapsed;
+    eventType = $("#eventType").val();
+    eventSubType = $("#eventSubType").val();
+    eventID = $("#eventID").val();
+    annotation = $("#annotation").val();
+    startTime = endTime = timeElapsed;
 
-  if (!eventID.length) {
-    alert("Error. Event ID cannot be empty.");
-    return;
-  }
-
-  // check for duplicate entries
-  for (var i in completedEventsHash) {
-    if ((completedEventsHash[i].eventType == eventType) &&
-        (completedEventsHash[i].eventSubType == eventSubType) &&
-        (completedEventsHash[i].eventID == eventID)) {
-      alert("Error. Attempting to start an event with the same event type, sub-type, and ID as an existing entry in Tagged Events.");
-      return;
+    if (!eventID.length) {
+	alert("Error. Event ID cannot be empty.");
+	return;
     }
-  }
 
-  evt = new TagEvent(eventType, eventSubType, eventID, annotation, startTime, endTime, $("#author").val());
+    // check for duplicate entries
+    for (var i in completedEventsHash) {
+	if ((completedEventsHash[i].eventType == eventType) &&
+            (completedEventsHash[i].eventSubType == eventSubType) &&
+            (completedEventsHash[i].eventID == eventID)) {
+	    alert("Error. Attempting to start an event with the same event type, sub-type, and ID as an existing entry in Tagged Events.");
+	    return;
+	}
+    }
 
-  // store that shit in the database!
-  storeTagEventInDB(evt);
+    evt = new TagEvent(eventType, eventSubType, eventID, annotation, startTime, endTime, $("#author").val());
+
+    // store that shit in the database!
+    storeTagEventInDB(evt);
 }
 
 function tagStartEvent() {
-  eventType = $("#eventType").val();
-  eventSubType = $("#eventSubType").val();
-  eventID = $("#eventID").val();
-  annotation = $("#annotation").val();
-  startTime = timeElapsed;
+    eventType = $("#eventType").val();
+    eventSubType = $("#eventSubType").val();
+    eventID = $("#eventID").val();
+    annotation = $("#annotation").val();
+    startTime = timeElapsed;
 
-  if (!eventID.length) {
-    alert("Error. Event ID cannot be empty.");
-    return;
-  }
-
-  // Do a sanity check to make sure that no active events have the same
-  // eventType, eventSubType, and eventID as the one we are about to
-  // add:
-  for (var i in activeEventsHash) {
-    if ((activeEventsHash[i].eventType == eventType) &&
-        (activeEventsHash[i].eventSubType == eventSubType) &&
-        (activeEventsHash[i].eventID == eventID)) {
-      alert("Error. Attempting to start an event with the same event type, sub-type, and ID as an existing entry in Active Events.");
-      return;
+    if (!eventID.length) {
+	alert("Error. Event ID cannot be empty.");
+	return;
     }
-  }
 
-  for (var i in completedEventsHash) {
-    if ((completedEventsHash[i].eventType == eventType) &&
-        (completedEventsHash[i].eventSubType == eventSubType) &&
-        (completedEventsHash[i].eventID == eventID)) {
-      alert("Error. Attempting to start an event with the same event type, sub-type, and ID as an existing entry in Tagged Events.");
-      return;
+    // Do a sanity check to make sure that no active events have the same
+    // eventType, eventSubType, and eventID as the one we are about to
+    // add:
+    for (var i in activeEventsHash) {
+	if ((activeEventsHash[i].eventType == eventType) &&
+            (activeEventsHash[i].eventSubType == eventSubType) &&
+            (activeEventsHash[i].eventID == eventID)) {
+	    alert("Error. Attempting to start an event with the same event type, sub-type, and ID as an existing entry in Active Events.");
+	    return;
+	}
     }
-  }
+
+    for (var i in completedEventsHash) {
+	if ((completedEventsHash[i].eventType == eventType) &&
+            (completedEventsHash[i].eventSubType == eventSubType) &&
+            (completedEventsHash[i].eventID == eventID)) {
+	    alert("Error. Attempting to start an event with the same event type, sub-type, and ID as an existing entry in Tagged Events.");
+	    return;
+	}
+    }
 
 
-  evt = new TagEvent(eventType, eventSubType, eventID, annotation, startTime, null, $("#author").val());
+    evt = new TagEvent(eventType, eventSubType, eventID, annotation, startTime, null, $("#author").val());
 
-  // Create new event entry in activeEventsHash
-  eventDivUniqueID = createNewUniqueDivID();
-  activeEventsHash[eventDivUniqueID] = evt;
+    // Create new event entry in activeEventsHash
+    eventDivUniqueID = createNewUniqueDivID();
+    activeEventsHash[eventDivUniqueID] = evt;
 
 
-  newEventDiv = $('<div class="activeEvent" id="' + eventDivUniqueID + '"></div>')
+    newEventDiv = $('<div class="activeEvent" id="' + eventDivUniqueID + '"></div>')
 
-  // sorry for the ugly escaped quotes :0
-  newEventDiv.append('Start: ' + secToMinSecStr(startTime));
-  newEventDiv.append(' <input type="button" onclick="JumpToTimePaused(' + startTime + ');" value="Goto">')
-  newEventDiv.append('<br/>');
-  newEventDiv.append(eventType + ': ' + eventSubType + ' (' + eventID + ')');
-  newEventDiv.append('<br/>');
-  newEventDiv.append(annotation);
-  newEventDiv.append('<br/>');
-  // yucky, sorry for the ugly escaped quote :0
-  newEventDiv.append('<input type="button" onclick=\'EndActiveEvent("' + eventDivUniqueID + '");\' value="End Event">')
-  newEventDiv.append('<input type="button" onclick=\'DiscardActiveEvent("' + eventDivUniqueID + '");\' value="Discard Event">')
-  
-  $("#activeEventsDiv").append(newEventDiv);
+    // sorry for the ugly escaped quotes :0
+    newEventDiv.append('Start: ' + secToMinSecStr(startTime));
+    newEventDiv.append(' <input type="button" onclick="JumpToTimePaused(' + startTime + ');" value="Goto">')
+    newEventDiv.append('<br/>');
+    newEventDiv.append(eventType + ': ' + eventSubType + ' (' + eventID + ')');
+    newEventDiv.append('<br/>');
+    newEventDiv.append(annotation);
+    newEventDiv.append('<br/>');
+    // yucky, sorry for the ugly escaped quote :0
+    newEventDiv.append('<input type="button" onclick=\'EndActiveEvent("' + eventDivUniqueID + '");\' value="End Event">')
+    newEventDiv.append('<input type="button" onclick=\'DiscardActiveEvent("' + eventDivUniqueID + '");\' value="Discard Event">')
+    
+    $("#activeEventsDiv").append(newEventDiv);
 }
 
 // Constructor for TagEvent class
 function TagEvent(eventType, eventSubType, eventID, annotation, startTime, endTime, authorName) {
-  this.eventType = eventType;
-  this.eventSubType = eventSubType;
-  this.eventID = eventID;
-  this.annotation = annotation;
-  this.startTime = startTime;
-  this.endTime = endTime;
-  this.authorName = authorName;
-  this.sqlUniqueID = null; // only relevant if fetched from database
+    this.eventType = eventType;
+    this.eventSubType = eventSubType;
+    this.eventID = eventID;
+    this.annotation = annotation;
+    this.startTime = startTime;
+    this.endTime = endTime;
+    this.authorName = authorName;
+    this.sqlUniqueID = null; // only relevant if fetched from database
 }
 
 TagEvent.prototype = new TagEvent
@@ -297,57 +313,53 @@ TagEvent.prototype = new TagEvent
 // For some reason, we need to pause before jumping or else we won't
 // land accurately on the desired time
 function JumpToTimePaused(timeSecs) {
-  // Pause the movie if we're not already paused,
-  // so that we can accurately jump to timeSecs
-  if (isPlaying) {
-    sendEvent('playpause');
-  }
-  sendEvent('scrub', timeSecs);
+    // Pause the movie if we're not already paused,
+    // so that we can accurately jump to timeSecs
+    if (isPlaying) {
+	sendEvent('playpause');
+    }
+    sendEvent('scrub', timeSecs);
 }
 
 function EndActiveEvent(activeEventsID) {
-  console.log("EndActiveEvent " + activeEventsID);
+    evt = activeEventsHash[activeEventsID];
+    assert (evt.endTime == null);
 
-  evt = activeEventsHash[activeEventsID];
-  assert (evt.endTime == null);
+    tmpEndTime = timeElapsed;
 
-  tmpEndTime = timeElapsed;
+    // sanity check
+    if (tmpEndTime < evt.startTime) {
+	alert("Error. Ending time (" + secToMinSecStr(tmpEndTime) + ") is earlier than starting time (" + secToMinSecStr(evt.startTime) + ").");
+	return;
+    }
 
-  // sanity check
-  if (tmpEndTime < evt.startTime) {
-    alert("Error. Ending time (" + secToMinSecStr(tmpEndTime) + ") is earlier than starting time (" + secToMinSecStr(evt.startTime) + ").");
-    return;
-  }
+    // Only assign this after sanity check has passed
+    evt.endTime = tmpEndTime;
 
-  // Only assign this after sanity check has passed
-  evt.endTime = tmpEndTime;
+    // Now evt is all ready to be sent to the db via AJAX
+    storeTagEventInDB(evt);
 
-  // Now evt is all ready to be sent to the db via AJAX
-  storeTagEventInDB(evt);
-
-  // After we're done with the entry, scrap it!
-  DiscardActiveEvent(activeEventsID);
+    // After we're done with the entry, scrap it!
+    DiscardActiveEvent(activeEventsID);
 }
 
 function DiscardActiveEvent(activeEventsID) {
-  console.log("DiscardActiveEvent " + activeEventsID);
+    // Remove from activeEventsHash
+    delete activeEventsHash[activeEventsID];
 
-  // Remove from activeEventsHash
-  delete activeEventsHash[activeEventsID];
-
-  // Remove from DOM
-  $('#' + activeEventsID).remove();
+    // Remove from DOM
+    $('#' + activeEventsID).remove();
 }
 
 // This uses AJAX to actually delete this entry permanently from the
 // database, and then refreshes the display
 function DeleteCompletedEvent(completedEventID) {
-  console.log("DeleteCompletedEvent: " + completedEventID);
+    myEvt = completedEventsHash[completedEventID];
 
-  myEvt = completedEventsHash[completedEventID];
-  //console.log(myEvt.sqlUniqueID);
-
-  $.post("db/deleteTagEntry.php", {uniqueID: myEvt.sqlUniqueID}, function () {});
-
-  fetchAllTagEventsFromDB();
+    $.post("db/deleteTagEntry.php", 
+	   {uniqueID: myEvt.sqlUniqueID}, 
+	   function(responseJSONStr) {
+	       parseResponseJSON(responseJSONStr);
+	       fetchAllTagEventsFromDB();
+	   });
 }

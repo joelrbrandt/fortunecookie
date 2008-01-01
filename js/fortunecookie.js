@@ -40,20 +40,14 @@ var completedEventsHash = new Array();
 
 
 $(document).ready(function() {
-    var so = new SWFObject('swf/mediaplayer.swf','mpl','800','620','8');
-    
-    so.addParam("allowfullscreen", "true");
-    so.addParam("allowscriptaccess", "always");
-
-    so.addVariable('displayheight', '600'); // height of controller bar is 20
-    so.addVariable('displaywidth', '800');
-    so.addVariable('screencolor', '0xFFFFFF');
-    so.addVariable('autostart', 'true');
-    so.addVariable("file", flvURL);
-    so.addVariable("enablejs", "true");
-    so.addVariable("javascriptid", "mpl");
-
-    so.write('player');
+						   
+	var w = window.open('externalPlayer.html', 'myWindow', 'width=800,height=640,resizable=yes');
+	
+    executeAfterWindowLoaded(function(newWindow) {
+		newWindow.embedVideo("whatever");
+		newWindow.storeThisPage(this);
+    },w);
+	
 
     $("#tagOneShot").click(function() {tagOneShotEvent();});
     $("#tagStartEvent").click(function() {tagStartEvent();});
@@ -63,7 +57,7 @@ $(document).ready(function() {
 
 function assert(expr) {
     if (!expr) {
-	alert("ASSERTION FAILURE, BITCH!!!");
+	alert("Assertion failed.");
     }
 }
 
@@ -88,6 +82,7 @@ function getUpdate(typ,pr1,pr2,pid) {
 	timeElapsed = pr1; 
 	timeRemaining = pr2;
 	$("#currentTime").html(secToMinSecStr(timeElapsed));
+	
     }
     else if (typ == "state") {
 	if (pr1 == 2) {

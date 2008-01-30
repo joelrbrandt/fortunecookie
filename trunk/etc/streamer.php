@@ -69,9 +69,16 @@ if(strrchr($filename, '.') == '.flv' &&
 	fseek($fh, $position);
 	
 	while(!feof($fh)) {
+          $prePrintTime = microtime(true);
 	  print(fread($fh, 65536));
 	  flush();
-	  // TODO: put in some bandwidth limiting?
+	  $postPrintTime = microtime(true);
+	  
+	  $MAX_SLEEP_TIME = 0.25;
+
+	  $sleepTime = $MAX_SLEEP_TIME - ($postPrintTime - $prePrintTime);
+	  if($sleepTime > 0)
+	    usleep($sleepTime * 1000000);
 	} 
 
  }

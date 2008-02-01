@@ -8,76 +8,26 @@
 <script type="text/javascript" src="js/fortunecookie.js"></script>
 </head>
 
-
 <body>
 
-  <center><h1>Fortune Cookie!</h1></center>
+<center><h1>Fortune Cookie!</h1></center>
 
 <a href="#" onclick="createPlayerWindow('player.html')">Open the player window</a>
 
-  <table width="100%" border="0" cellpadding="5">
-    <tr>
-      <td valign="top">
-
-      <h3>Tagged Events <small>(already in db)</small></h3>
-
-      <div id="completedEvents">
-        <!-- populate div in fetchAllTagEventsFromDB() -->
-      </div>
-
-      </td>
-      <td><p id="player"><a href="http://www.macromedia.com/go/getflashplayer">Get the Flash Player</a> to see this movie.</p></td>
-      <td valign="top"><h3>Create Tag</h3>
-
-        <form name="tagForm" method="post" action="return false;">
-
-          Author:
-          <select name="author" id="author">
-            <option>Joel B.</option>
-            <option>Joel L.</option>
-            <option>Philip</option>
-          </select>
-
-        <p>Current time: <span id="currentTime"></span></p>
-        <p>Computer clock time: TODO (add skew)</p>
-
-          Event type:
-          <select name="eventType" id="eventType">
-            <option>debugging</option>
-            <option>coding</option>
-            <option>testing</option>
-            <option>reading webpage</option>
-            <option>searching</option>
-          </select>
-          <p/>
-	     Event sub-type:
-          <select name="eventSubType" id="eventSubType">
-            <option>None</option>
-            <option>making mistake</option>
-            <option>being confused</option>
-            <option>another sub-type</option>
-          </select>
-          <p/>          
-          Event ID:
-          <input type="text" size="3" name="eventID" id="eventID">
-          <p/>
-                Annotation:
-                <textarea name="annotation" id="annotation" cols="30" rows="3"></textarea>
-          <p/>
-            <input type="button" name="tagStartEvent" id="tagStartEvent" value="Start Event">
-            <input type="button" name="tagOneShot" id="tagOneShot" value="Tag One-Shot Event">
-      </form>
-
-
-      <div id="activeEventsDiv">
-      <h3>Active Events <small>(not in db yet)</small></h3>
-
-        <!-- populate div in tagStartEvent() -->
-      </div>
-   
-    </td>
-    </tr>
-  </table>
+<input type="button" onClick="pauseMovie()" value="Pause">
+<input type="button" onClick="playMovie()" value="Play">
+<input type="button" onClick="gotoSpot(30)" value="Goto 30 seconds">
+<input type="button" onClick="gotoSpot(600)" value="Goto 10 min">
+<input type="button" onClick="displaySpecs()" value="Find the size">
+<br>
+Domain: <input id="domain" type=text size=30 value="http://hci.stanford.edu/jbrandt/temp/stream/">
+<br>
+Vid Name: <input id="vidName" type=text size=30 value="s1.flv">
+<br>
+<input type="button" onClick="switchVideo()" value="Switch up the video">
+<div id=time> Time: </div>
+<div id=specs> </div>
+<div id='content'></div>
 
 </body>
 </html>

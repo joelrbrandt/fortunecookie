@@ -1,0 +1,130 @@
+<html>
+<head>
+<script src="../js/jquery-1.2.1.js"> </script>
+<script>
+
+var mdLoaded = false;
+
+function callMe() {
+	alert("i got called");
+}
+
+function videoStopped() {
+	alert("Video stopped");
+}
+
+function videoStarted() {
+	alert("Video started");
+}
+
+function doshit() {
+    thisMovie("myScrubber").goHome();
+}
+
+function pauseMovie() {
+	thisMovie("myScrubber").pauseMovie();
+}
+
+function playMovie() {
+	thisMovie("myScrubber").playMovie();
+}
+
+function gotoSpot(timeInSec) {
+	thisMovie("myScrubber").gotoTime(timeInSec);
+}
+
+function startClockUpdating() {
+	//Can be Disabled, to test AS-->JS functionality
+	//setInterval("clockUpdate()", 1000);
+}
+
+function clockUpdate() {
+	var time = thisMovie("myScrubber").getMovieTime();
+	document.getElementById("time").innerHTML = "Time: " + leadingZero(Math.floor(time/60)) + ":" + leadingZero(time%60);
+}
+
+function setPageTime(numSecs) {
+	document.getElementById("time").innerHTML = "TimeXXX: " + leadingZero(Math.floor(numSecs/60)) + ":" + leadingZero(numSecs%60);
+}
+
+function displaySpecs() {
+        if(mdLoaded) {
+	   var tempWidth = thisMovie("myScrubber").getDuration();
+           document.getElementById("specs").innerHTML = "Length: " + tempWidth;
+        }
+}
+
+function resizeVideo() {
+     $("#myScrubber").attr("width", thisMovie("myScrubber").getWidth());
+     $("#myScrubberEmbed").attr("width", thisMovie("myScrubber").getWidth());
+     $("#myScrubber").attr("height", thisMovie("myScrubber").getHeight());
+     $("#myScrubberEmbed").attr("height", thisMovie("myScrubber").getHeight());
+}
+
+function metadataLoaded() {
+	mdLoaded = true;
+
+        resizeVideo();
+}
+
+function metadataUnloaded() {
+        mdLoaded = false;
+}
+
+function switchVideo() {
+	var targetElement1 = document.getElementById("domain");
+	var targetElement2 = document.getElementById("vidName");
+	var dom = targetElement1.value;
+	var vid = targetElement2.value;
+	thisMovie("myScrubber").setDomain(dom);
+	thisMovie("myScrubber").setFilename(vid);
+
+        metadataUnloaded();
+}
+
+function thisMovie(movieName) {
+    if (navigator.appName.indexOf("Microsoft") != -1) {
+        return window[movieName];
+    }
+    else {
+        return document[movieName];
+    }
+}
+
+function leadingZero(nr)
+{
+	if (nr < 10) nr = "0" + nr;
+	return nr;
+}
+</script>
+
+
+</head>
+  <body onLoad="startClockUpdating()">
+<input type="button" onClick="pauseMovie()" value="Pause">
+<input type="button" onClick="playMovie()" value="Play">
+<input type="button" onClick="gotoSpot(30)" value="Goto 30 seconds">
+<input type="button" onClick="gotoSpot(600)" value="Goto 10 min">
+<input type="button" onClick="displaySpecs()" value="Find the size">
+<br>
+Domain: <input id="domain" type=text size=30 value="http://hci.stanford.edu/jbrandt/temp/stream/">
+<br>
+Vid Name: <input id="vidName" type=text size=30 value="s1.flv">
+<br>
+<input type="button" onClick="switchVideo()" value="Switch up the video">
+<div id=time> Time: </div>
+<div id=specs> </div>
+
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+  codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
+  width="380" height="260" id="myScrubber">    
+  <param name="movie" value="../flash/scrubber.swf"/>    
+  <param name="quality" value="high" /> 
+  <embed id="myScrubberEmbed" src="../flash/scrubber.swf" quality="high" name="myScrubber"
+  pluginspage="http://www.macromedia.com/go/getflashplayer"
+  type="application/x-shockwave-flash" width="800" height="700">
+</embed>
+</object>
+
+</body>
+</html>

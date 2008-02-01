@@ -1,0 +1,94 @@
+<html>
+<head>
+<style>
+body {
+    background-color: #000000;
+    margin:0;
+}
+#player {
+    text-align:center;
+}
+</style>
+
+<script src="js/jquery-1.2.1.js"></script>
+<script>
+
+var mdLoaded = false;
+
+function videoStopped() {
+	alert("Video stopped");
+}
+
+function videoStarted() {
+    console.log("Video started");
+}
+
+function metadataLoaded() {
+    mdLoaded = true;
+    console.log("Metadata loaded");
+    resizeVideoToWindow()
+}
+
+function metadataUnloaded() {
+    console.log("Metadata unloaded");
+    mdLoaded = false;
+}
+
+function setPageTime(numSecs) {
+    document.getElementById("time").innerHTML = "TimeXXX: " + leadingZero(Math.floor(numSecs/60)) + ":" + leadingZero(numSecs%60);
+}
+
+function resizeVideoToWindow() {
+    resizeVideo(window.innerWidth, window.innerHeight);
+}
+
+function resizeVideo(width, height) {
+    var movie = getFlashMovie("myScrubber")
+    var aspect = 640 / 480
+
+    var newWidth = height * aspect;
+    var newHeight = height
+    if (newWidth > width) {
+	newWidth = width
+	newHeight = width / aspect
+    }
+    
+    console.log("resizing movie to: " + newWidth + ", " + newHeight);
+
+    $("#myScrubber").attr("width", newWidth);
+    $("#myScrubberEmbed").attr("width", newWidth);
+    $("#myScrubber").attr("height", newHeight);
+    $("#myScrubberEmbed").attr("height", newHeight);
+}
+
+function getFlashMovie(movieName) {
+    if (navigator.appName.indexOf("Microsoft") != -1) {
+        return window[movieName];
+    }
+    else {
+        return window.document[movieName];
+    }
+}
+
+function setup() {
+    window.onresize = resizeVideoToWindow;
+} 
+
+</script>
+</head>
+<body onload="document.isFinishedLoading = true; setup()">
+<div id="player">
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+  codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,19,0"
+  width="800" height="600" id="myScrubber">    
+  <param name="movie" value="flash/scrubber.swf"/>    
+  <param name="quality" value="high" /> 
+  <embed id="myScrubberEmbed" src="flash/scrubber.swf" quality="high" name="myScrubber"
+  pluginspage="http://www.macromedia.com/go/getflashplayer"
+  type="application/x-shockwave-flash" width="800" height="600">
+</embed>
+</object>
+</div>
+</body>
+</html>
+

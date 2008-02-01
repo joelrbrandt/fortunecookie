@@ -6,11 +6,59 @@
 // because that's what's gonna be written into the database!
 var flvURL = "http://fortunecookie.stanford.edu/dev/fortunecookie/etc/s1.flv";
 
+var playerWindow = null
+
 var timeElapsed;
 var timeRemaining;
 // is the movie currently playing or paused?
 var isPlaying = false;
 
+// TODO: this should have some sort of histeresis in case things fail
+function executeAfterWindowLoaded(callback, w) {
+    if (w && w.document && w.document.isFinishedLoading) {
+	callback(w);
+    } else {
+	setTimeout(function() {executeAfterWindowLoaded(callback, w)}, 100);
+    }
+}
+
+// callback is a function that will get called after the window
+//   -- 1 parameter: the new window
+function newWindow(url, name, parameters, callback) {
+    if (name == null) {
+	name = 'mywindow';
+    }
+    if (parameters == null) {
+	parameters = 'width=200,height=200,resizable=yes';
+    }
+
+    var w = window.open(url, name, parameters);
+
+    if (callback != null) {
+	executeAfterWindowLoaded(callback,w);
+    }
+
+    return w
+}
+
+function createPlayerWindow(url) {
+    playerWindow = newWindow(url,
+			     'playerWindow',
+			     'status=no, \
+                             toolbar=no, \
+                             location=no, \
+                             menubar=no, \
+                             directories=no, \
+                             resizable=yes, \
+                             scrollbars=yes, \
+                             height=1280, \
+                             width=1024',
+			     finishCreatePlayerWindow);
+}
+
+function finishCreatePlayerWindow(w) {
+    alert("opened!");
+}
 
 // WARNING - If you tag too many entries (like INT_MAX), this WILL
 // overflow and wrap around, but I don't think this is gonna be a 

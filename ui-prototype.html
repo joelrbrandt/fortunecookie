@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Fortune Cookie UI Prototype</title>
+
+<link rel="stylesheet" href="ui-prototype-style.css">
+<script type="text/javascript" src="js/jquery-1.2.1.js"></script>
+
+
+<script type="text/javascript">
+
+var curPartName = null
+var curActivityName = null
+
+$(document).ready(function() {
+
+  $(".partbutton").click(function() {
+    // Uncolor the old selection:
+    if (curPartName) {
+      var old_bordername = '#' + curPartName + '_border';
+      $(old_bordername).css("border", "2px solid white");
+      curPartName = null
+    }
+
+    curPartName = this.id
+
+    var bordername = '#' + curPartName + '_border';
+    $(bordername).css("border", "2px solid #ee0000");
+  });
+
+
+  $(".activitybutton").click(function() {
+    // Uncolor the old selection:
+    if (curActivityName) {
+      var old_bordername = '#' + curActivityName + '_border';
+      $(old_bordername).css("border", "2px solid white");
+      curActivityName = null
+    }
+
+    curActivityName = this.id
+
+    var bordername = '#' + curActivityName + '_border';
+    $(bordername).css("border", "2px solid #ee0000")
+  });
+
+
+});
+
+
+</script>
+
+</head>
+
+<body>
+
+  <p/>
+  
+  Part:
+ 
+  <div class="buttonborder" id="Part_Model_border">
+    <input type="button" id="Part_Model" class="partbutton" value="Model" />
+  </div>
+
+  <div class="buttonborder" id="Part_View_border">
+  <input type="button" id="Part_View" class="partbutton" value="View" />
+  </div>
+
+  <div class="buttonborder" id="Part_Controller_border">
+  <input type="button" id="Part_Controller" class="partbutton" value="Controller" />
+  </div>
+
+  <div class="buttonborder" id="Part_Foundation_border"> <input type="button" id="Part_Foundation" class="partbutton" value="Foundation" />
+  </div>
+
+  <p/>
+
+  Activity:
+
+  <div class="buttonborder" id="Activity_AddNew_border">
+    <input type="button" id="Activity_AddNew" class="activitybutton" value="Adding new functionality" />
+  </div>
+
+  <div class="buttonborder" id="Activity_Web_border">
+  <input type="button" id="Activity_Web" class="activitybutton" value="On the Web" />
+  </div>
+
+  <div class="buttonborder" id="Activity_Test_border">
+  <input type="button" id="Activity_Test" class="activitybutton" value="Testing" />
+  </div>
+
+  <div class="buttonborder" id="Activity_Debug_border">
+  <input type="button" id="Activity_Debug" class="activitybutton" value="Debugging" />
+  </div>
+
+  <div class="buttonborder" id="Activity_Planning_border">
+  <input type="button" id="Activity_Planning" class="activitybutton" value="Planning" />
+  </div>
+
+  <div class="buttonborder" id="Activity_ExistingCodebase_border">
+  <input type="button" id="Activity_ExistingCodebase" class="activitybutton" value="Sensemaking in existing code" />
+
+  </div>
+  <div class="buttonborder" id="Activity_ToolSetup_border">
+  <input type="button" id="Activity_ToolSetup" class="activitybutton" value="Setting up tools" />
+  </div>
+
+  <div class="buttonborder" id="Activity_Researcher_border">
+  <input type="button" id="Activity_Researcher" class="activitybutton" value="Interacting w/ Researcher" />
+  </div>
+
+  <div class="buttonborder" id="Activity_Other_border">
+  <input type="button" id="Activity_Other" class="activitybutton" value="Other" />
+  </div>
+
+</body>
+
+</html>

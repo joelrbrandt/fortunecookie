@@ -6,8 +6,8 @@
 <link rel="stylesheet" href="fortunecookie.css" />
 <link rel="stylesheet" href="slider.css" />
 <script type="text/javascript" src="js/jquery-1.2.1.js"></script>
-<script type="text/javascript" src="js/fortunecookie.js"></script>
 <script type="text/javascript" src="js/slider.js"></script>
+<script type="text/javascript" src="js/fortunecookie.js"></script>
 </head>
 
 <body>
@@ -26,23 +26,21 @@ Domain: <input id="domain" type=text size=30 value="http://hci.stanford.edu/jbra
 <br>
 Vid Name: <input id="vidName" type=text size=30 value="s1.flv">
 <br>
-<input type="button" onClick="switchVideo()" value="Switch up the video">
-<div id=time> Time: </div>
+<input type="button" onClick="switchVideoButton()" value="Switch up the video">
+<p>Time: <span id="time">0:00</span></p>
 <div id=specs> </div>
 <div id='content'></div>
 
 <!-- http://carpe.ambiprospect.com/slider/ -->
 
 <div class="carpe_horizontal_slider_display_combo">
-	<div class="carpe_slider_display_holder">
+	<div class="carpe_slider_display_holder" style="visibility: hidden; width: 0px;">
 		<!-- Default value: 0 -->
-		<input class="carpe_slider_display" id="display1" type="text" value="0" from="0" to="800" />
+		<input class="carpe_slider_display" id="scrubberDisplay" type="text" value="0" from="0" to="800"/>
 	</div>
-	<div class="carpe_horizontal_slider_track" style="width: 820">
-
-		<div class="carpe_slider_slit" style="width:800">&nbsp;</div>
-    <div class="carpe_slider" id="slider1" display="display1"
-      distance="800">&nbsp;</div>
+	<div class="carpe_horizontal_slider_track" style="width: 820; background-color: #FFFFFF; border: none">
+		<div class="carpe_slider_slit" style="width:800; border: none">&nbsp;</div>
+		<div class="carpe_slider" id="scrubber" display="scrubberDisplay" distance="800" style="border: solid 1px">&nbsp;</div>
 	</div>
 </div>
 

@@ -4,8 +4,10 @@
 <title>Fortune Cookie!</title>
 
 <link rel="stylesheet" href="fortunecookie.css" />
+<link rel="stylesheet" href="slider.css" />
 <script type="text/javascript" src="js/jquery-1.2.1.js"></script>
 <script type="text/javascript" src="js/fortunecookie.js"></script>
+<script type="text/javascript" src="js/slider.js"></script>
 </head>
 
 <body>
@@ -28,6 +30,22 @@ Vid Name: <input id="vidName" type=text size=30 value="s1.flv">
 <div id=time> Time: </div>
 <div id=specs> </div>
 <div id='content'></div>
+
+<!-- http://carpe.ambiprospect.com/slider/ -->
+
+<div class="carpe_horizontal_slider_display_combo">
+	<div class="carpe_slider_display_holder">
+		<!-- Default value: 0 -->
+		<input class="carpe_slider_display" id="display1" type="text" value="0" from="0" to="800" />
+	</div>
+	<div class="carpe_horizontal_slider_track" style="width: 820">
+
+		<div class="carpe_slider_slit" style="width:800">&nbsp;</div>
+    <div class="carpe_slider" id="slider1" display="display1"
+      distance="800">&nbsp;</div>
+	</div>
+</div>
+
 
 </body>
 </html>

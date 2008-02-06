@@ -1,14 +1,21 @@
-.buttonborder {
-  margin-bottom: 3px;
+.partbutton {
   width: 200px;
-  border: 2px solid white;
+  height: 40px;
 }
 
 .activitybutton {
   width: 200px;
+  height: 40px;
 }
 
-.partbutton {
+.eventbutton {
   width: 200px;
+  height: 40px;
+}
+
+.buttonborder {
+  margin-bottom: 3px;
+  width: 200px;
+  border: 2px solid white;
 }
 

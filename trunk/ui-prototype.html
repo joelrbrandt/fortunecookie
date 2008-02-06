@@ -13,19 +13,30 @@
 var curPartName = null
 var curActivityName = null
 
+// Key:   Event name
+// Value: If it's NON-null, then event is active
+//        If it's null, then event is NOT active
+// If event name is not IN activeEvents, then event is NOT active
+// (I can't figure out how to friggin' remove an element by key!)
+var activeEvents = new Array();
+
+function getBorderName(n) {
+  return '#' + n + '_border';
+}
+
 $(document).ready(function() {
 
   $(".partbutton").click(function() {
     // Uncolor the old selection:
     if (curPartName) {
-      var old_bordername = '#' + curPartName + '_border';
+      var old_bordername = getBorderName(curPartName);
       $(old_bordername).css("border", "2px solid white");
       curPartName = null
     }
 
     curPartName = this.id
 
-    var bordername = '#' + curPartName + '_border';
+    var bordername = getBorderName(curPartName);
     $(bordername).css("border", "2px solid #ee0000");
   });
 
@@ -33,15 +44,34 @@ $(document).ready(function() {
   $(".activitybutton").click(function() {
     // Uncolor the old selection:
     if (curActivityName) {
-      var old_bordername = '#' + curActivityName + '_border';
+      var old_bordername = getBorderName(curActivityName);
       $(old_bordername).css("border", "2px solid white");
       curActivityName = null
     }
 
     curActivityName = this.id
 
-    var bordername = '#' + curActivityName + '_border';
+    var bordername = getBorderName(curActivityName);
     $(bordername).css("border", "2px solid #ee0000")
+  });
+
+
+  $(".eventbutton").click(function() {
+    curEventName = this.id
+ 
+    var bordername = getBorderName(curEventName);
+
+    // DE-ACTIVATE EVENT
+    if ((curEventName in activeEvents) && (activeEvents[curEventName] !=
+        null)) {
+      $(bordername).css("border", "2px solid white");
+      activeEvents[curEventName] = null; // my half-ass way of removing the event
+    }
+    // ACTIVATE EVENT
+    else {
+      $(bordername).css("border", "2px solid #ee0000");
+      activeEvents[curEventName] = 1;
+    }
   });
 
 
@@ -54,7 +84,16 @@ $(document).ready(function() {
 
 <body>
 
-  <p/>
+
+  <table border="0" cellpadding="10">
+
+  <tr>
+
+  <td valign="top">
+
+  <table border="0" cellpadding="5">
+    <tr>
+      <td valign="top">
   
   Part:
  
@@ -73,7 +112,11 @@ $(document).ready(function() {
   <div class="buttonborder" id="Part_Foundation_border"> <input type="button" id="Part_Foundation" class="partbutton" value="Foundation" />
   </div>
 
-  <p/>
+    </td>
+  </tr>
+
+  <tr>
+    <td valign="top">
 
   Activity:
 
@@ -112,6 +155,37 @@ $(document).ready(function() {
   <div class="buttonborder" id="Activity_Other_border">
   <input type="button" id="Activity_Other" class="activitybutton" value="Other" />
   </div>
+
+    </td>
+  </tr>
+</table>
+
+</td>
+
+<td valign="top">
+
+  Event:
+
+  <div class="buttonborder" id="Event_PickNose_border">
+    <input type="button" id="Event_PickNose" class="eventbutton"
+    value="Picking Nose" />
+  </div>
+
+  <div class="buttonborder" id="Event_ScratchButt_border">
+    <input type="button" id="Event_ScratchButt" class="eventbutton"
+    value="Scratching Butt" />
+  </div>
+
+  <div class="buttonborder" id="Event_SniffArmpits_border">
+    <input type="button" id="Event_SniffArmpits" class="eventbutton"
+    value="Sniffing Armpits" />
+  </div>
+
+
+</td>
+
+</table>
+
 
 </body>
 

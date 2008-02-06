@@ -13,12 +13,6 @@
 var curPartName = null
 var curActivityName = null
 
-// Key:   Event name
-// Value: If it's NON-null, then event is active
-//        If it's null, then event is NOT active
-// If event name is not IN activeEvents, then event is NOT active
-// (I can't figure out how to friggin' remove an element by key!)
-var activeEvents = new Array();
 
 function getBorderName(n) {
   return '#' + n + '_border';
@@ -57,21 +51,7 @@ $(document).ready(function() {
 
 
   $(".eventbutton").click(function() {
-    curEventName = this.id
- 
-    var bordername = getBorderName(curEventName);
-
-    // DE-ACTIVATE EVENT
-    if ((curEventName in activeEvents) && (activeEvents[curEventName] !=
-        null)) {
-      $(bordername).css("border", "2px solid white");
-      activeEvents[curEventName] = null; // my half-ass way of removing the event
-    }
-    // ACTIVATE EVENT
-    else {
-      $(bordername).css("border", "2px solid #ee0000");
-      activeEvents[curEventName] = 1;
-    }
+    curEventName = this.id;
   });
 
 
@@ -181,10 +161,133 @@ $(document).ready(function() {
     value="Sniffing Armpits" />
   </div>
 
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
+
+  <div class="buttonborder" id="">
+    <input type="button" id="" class="eventbutton"
+    value="Blah event" />
+  </div>
 
 </td>
 
+<td valign="top">
+
+  Existing tags:
+
+  <div style="border: 1px solid #dddddd; padding: 3px; margin-bottom: 4px;">
+    Scratching Butt<br/>
+    Activity: Setting up tools<br/>
+    Part: Controller<br/>
+    Time: 23:29<br/>
+
+    <input type="button" value="Jump"/>
+    <input type="button" value="Delete"/>
+  </div>
+
+   <div style="border: 1px solid #dddddd; padding: 3px; margin-bottom: 4px;">
+    Picking Nose<br/>
+    Activity: Setting up tools<br/>
+    Part: Controller<br/>
+    Begin Time: 23:29<br/>
+
+    <input type="button" value="Jump"/>
+  </div>
+
+   <div style="border: 1px solid #dddddd; padding: 3px; margin-bottom: 4px;">
+    Scratching Butt<br/>
+    Activity: Setting up tools<br/>
+    Part: Controller<br/>
+    Time: 23:29<br/>
+
+    <input type="button" value="Jump"/>
+  </div>
+
+  <div style="border: 1px solid #dddddd; padding: 3px; margin-bottom: 4px;">
+    BEGIN ACTIVITY<br/>
+    Activity: Debugging<br/>
+    Part: Controller<br/>
+    Time: 25:11<br/>
+
+    <input type="button" value="Jump"/>
+  </div>
+
+  <div style="border: 1px solid #dddddd; padding: 3px; margin-bottom: 4px;">
+    BEGIN PART<br/>
+    Activity: Setting up tools<br/>
+    Part: Model<br/>
+    Time: 34:23<br/>
+
+    <input type="button" value="Jump"/>
+  </div>
+
+
+</td>
+
+
 </table>
+
+
+<i>Maybe put 'Already-tagged events' in an iframe so that we can have
+  scrollbars?  We will likely have LOTS of these events so that they
+  can't possibly all fit on the screen.  TABLE FORMAT WOULD BE NICE</i>
 
 
 </body>

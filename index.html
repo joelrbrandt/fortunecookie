@@ -1,49 +1,274 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Fortune Cookie!</title>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Fortune Cookie!</title>
 
-<link rel="stylesheet" href="fortunecookie.css" />
-<link rel="stylesheet" href="slider.css" />
-<script type="text/javascript" src="js/jquery-1.2.1.js"></script>
-<script type="text/javascript" src="js/slider.js"></script>
-<script type="text/javascript" src="js/fortunecookie.js"></script>
-</head>
+    <link rel="stylesheet" href="fortunecookie.css" />
+    <link rel="stylesheet" href="slider.css" />
+    <script type="text/javascript" src="js/jquery-1.2.1.js"></script>
+    <script type="text/javascript" src="js/slider.js"></script>
+    <script type="text/javascript" src="js/fortunecookie.js"></script>
+    <script type="text/javascript">
 
-<body>
-
-<center><h1>Fortune Cookie!</h1></center>
-
-<a href="#" onclick="createPlayerWindow('player.html')">Open the player window</a>
-
-<input type="button" onClick="pauseMovie()" value="Pause">
-<input type="button" onClick="playMovie()" value="Play">
-<input type="button" onClick="gotoSpot(30)" value="Goto 30 seconds">
-<input type="button" onClick="gotoSpot(600)" value="Goto 10 min">
-<input type="button" onClick="displaySpecs()" value="Find the size">
-<br>
-Domain: <input id="domain" type=text size=30 value="http://hci.stanford.edu/jbrandt/temp/stream/">
-<br>
-Vid Name: <input id="vidName" type=text size=30 value="s1.flv">
-<br>
-<input type="button" onClick="switchVideoButton()" value="Switch up the video">
-<p>Time: <span id="time">0:00</span></p>
-<div id=specs> </div>
-<div id='content'></div>
-
-<!-- http://carpe.ambiprospect.com/slider/ -->
-
-<div class="carpe_horizontal_slider_display_combo">
-	<div class="carpe_slider_display_holder" style="visibility: hidden; width: 0px;">
-		<!-- Default value: 0 -->
-		<input class="carpe_slider_display" id="scrubberDisplay" type="text" value="0" from="0" to="800"/>
-	</div>
-	<div class="carpe_horizontal_slider_track" style="width: 820; background-color: #FFFFFF; border: none">
-		<div class="carpe_slider_slit" style="width:800; border: none">&nbsp;</div>
-		<div class="carpe_slider" id="scrubber" display="scrubberDisplay" distance="800" style="border: solid 1px">&nbsp;</div>
-	</div>
-</div>
+      var curPartName = null
+      var curActivityName = null
 
 
-</body>
+      function getBorderName(n) {
+      return '#' + n + '_border';
+      }
+
+      $(document).ready(function() {
+
+      $(".partbutton").click(function() {
+      // Uncolor the old selection:
+      if (curPartName) {
+      var old_bordername = getBorderName(curPartName);
+      $(old_bordername).css("border", "2px solid white");
+      curPartName = null
+      }
+
+      curPartName = this.id
+
+      var bordername = getBorderName(curPartName);
+      $(bordername).css("border", "2px solid #ee0000");
+      });
+
+
+      $(".activitybutton").click(function() {
+      // Uncolor the old selection:
+      if (curActivityName) {
+      var old_bordername = getBorderName(curActivityName);
+      $(old_bordername).css("border", "2px solid white");
+      curActivityName = null
+      }
+
+      curActivityName = this.id
+
+      var bordername = getBorderName(curActivityName);
+      $(bordername).css("border", "2px solid #ee0000")
+      });
+
+
+      $(".eventbutton").click(function() {
+      curEventName = this.id;
+      });
+
+
+      });
+
+
+    </script>
+  </head>
+
+  <body>
+
+    <center><h1>Fortune Cookie!</h1></center>
+    <a href="#" onclick="createPlayerWindow('player.html')">Open the player window</a>
+    <!--
+    <input type="button" onClick="pauseMovie()" value="Pause">
+    <input type="button" onClick="playMovie()" value="Play">
+    <input type="button" onClick="gotoSpot(30)" value="Goto 30 seconds">
+    <input type="button" onClick="gotoSpot(600)" value="Goto 10 min">
+    <input type="button" onClick="displaySpecs()" value="Find the size">
+    <br>
+    -->
+    <p>Domain: <input id="domain" type=text size=30 value="http://hci.stanford.edu/jbrandt/temp/stream/">
+      Vid Name: <input id="vidName" type=text size=30 value="s1.flv">
+      <input type="button" onClick="switchVideoButton()" value="Switch!">
+      Researcher: <input id="researcher" type=text size=30 value="nobody">
+    <br>
+
+    <p>
+    <div id=specs> </div>
+    <div id='content'></div>
+
+    <!-- http://carpe.ambiprospect.com/slider/ -->
+
+    <div class="carpe_horizontal_slider_display_combo">
+      <div class="carpe_slider_display_holder" style="visibility: hidden; width: 0px;">
+	<!-- Default value: 0 -->
+	<input class="carpe_slider_display" id="scrubberDisplay" type="text" value="0" from="0" to="800"/>
+      </div>
+      <div class="carpe_horizontal_slider_track" style="width: 820; background-color: #FFFFFF; border: none">
+	<div class="carpe_slider_slit" style="width:800; border: none">&nbsp;</div>
+	<div class="carpe_slider" id="scrubber" display="scrubberDisplay" distance="800" style="border: solid 1px">&nbsp;</div>
+      </div>
+      Time: <span id="time">0:00</span></p>
+    </div>
+
+    <div style="clear: both">
+      <table border="0" cellpadding="10">
+
+	<tr>
+
+	  <td valign="top">
+
+	    <table border="0" cellpadding="5">
+	      <tr>
+		<td valign="top">
+		  
+		  Part:
+		  
+		  <div class="buttonborder" id="Part_Model_border">
+		    <input type="button" id="Part_Model" class="partbutton" value="Model" />
+		  </div>
+
+		  <div class="buttonborder" id="Part_View_border">
+		    <input type="button" id="Part_View" class="partbutton" value="View" />
+		  </div>
+
+		  <div class="buttonborder" id="Part_Controller_border">
+		    <input type="button" id="Part_Controller" class="partbutton" value="Controller" />
+		  </div>
+
+		  <div class="buttonborder" id="Part_Foundation_border"> <input type="button" id="Part_Foundation" class="partbutton" value="Foundation" />
+		  </div>
+
+		</td>
+	      </tr>
+
+	      <tr>
+		<td valign="top">
+
+		  Activity:
+
+		  <div class="buttonborder" id="Activity_AddNew_border">
+		    <input type="button" id="Activity_AddNew" class="activitybutton" value="Adding new functionality" />
+		  </div>
+
+		  <div class="buttonborder" id="Activity_Web_border">
+		    <input type="button" id="Activity_Web" class="activitybutton" value="On the Web" />
+		  </div>
+
+		  <div class="buttonborder" id="Activity_Test_border">
+		    <input type="button" id="Activity_Test" class="activitybutton" value="Testing" />
+		  </div>
+
+		  <div class="buttonborder" id="Activity_Debug_border">
+		    <input type="button" id="Activity_Debug" class="activitybutton" value="Debugging" />
+		  </div>
+
+		  <div class="buttonborder" id="Activity_Planning_border">
+		    <input type="button" id="Activity_Planning" class="activitybutton" value="Planning" />
+		  </div>
+
+		  <div class="buttonborder" id="Activity_ExistingCodebase_border">
+		    <input type="button" id="Activity_ExistingCodebase" class="activitybutton" value="Sensemaking in existing code" />
+
+		  </div>
+		  <div class="buttonborder" id="Activity_ToolSetup_border">
+		    <input type="button" id="Activity_ToolSetup" class="activitybutton" value="Setting up tools" />
+		  </div>
+
+		  <div class="buttonborder" id="Activity_Researcher_border">
+		    <input type="button" id="Activity_Researcher" class="activitybutton" value="Interacting w/ Researcher" />
+		  </div>
+
+		  <div class="buttonborder" id="Activity_Other_border">
+		    <input type="button" id="Activity_Other" class="activitybutton" value="Other" />
+		  </div>
+
+		</td>
+	      </tr>
+	    </table>
+
+	  </td>
+
+	  <td valign="top">
+
+	    Event:
+
+	    <div class="buttonborder" id="Event_PickNose_border">
+	      <input type="button" id="Event_PickNose" class="eventbutton"
+		     value="Picking Nose" />
+	    </div>
+
+	    <div class="buttonborder" id="Event_ScratchButt_border">
+	      <input type="button" id="Event_ScratchButt" class="eventbutton"
+		     value="Scratching Butt" />
+	    </div>
+
+	    <div class="buttonborder" id="Event_SniffArmpits_border">
+	      <input type="button" id="Event_SniffArmpits" class="eventbutton"
+		     value="Sniffing Armpits" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	    <div class="buttonborder" id="">
+	      <input type="button" id="" class="eventbutton"
+		     value="Blah event" />
+	    </div>
+
+	  </td>
+
+	  <td valign="top">
+	    <input type="button" value="." onClick="updateTable();">
+	    <div id="tagtable">&nbsp;</div>
+	  </td>
+
+
+      </table>
+    </div>
+
+  </body>
 </html>

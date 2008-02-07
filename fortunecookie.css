@@ -72,3 +72,49 @@ ul,ol {
   width: 150px;
 }
 
+.partbutton {
+  width: 200px;
+  height: 40px;
+}
+
+.activitybutton {
+  width: 200px;
+  height: 40px;
+}
+
+.eventbutton {
+  width: 200px;
+  height: 40px;
+}
+
+.buttonborder {
+  margin-bottom: 3px;
+  width: 200px;
+  border: 2px solid white;
+}
+
+.partbutton {
+  width: 200px;
+  height: 40px;
+}
+
+.activitybutton {
+  width: 200px;
+  height: 40px;
+}
+
+.eventbutton {
+  width: 200px;
+  height: 40px;
+}
+
+.buttonborder {
+  margin-bottom: 3px;
+  width: 200px;
+  border: 2px solid white;
+}
+
+#tagtable {
+  height: 800px;
+  overflow: auto;
+}

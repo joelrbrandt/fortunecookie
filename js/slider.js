@@ -87,6 +87,7 @@ function moveSlider(evnt)
 	v = Math.round((sliderPos * slider.scale + slider.from) * // calculate display value
 		       Math.pow(10, display.decimals)) / Math.pow(10, display.decimals)
 	display.value = v // put the new value in the slider display element
+	updateTime();
 	return false
     }
     return

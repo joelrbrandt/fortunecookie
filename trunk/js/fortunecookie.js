@@ -76,6 +76,7 @@ function playMovie() {
 function gotoSpot(timeInSec) {
     if(playerWindow && playerWindow.mdLoaded) {
 	getFlashMovie("myScrubber").gotoTime(timeInSec);
+	updatePartAndActivity(timeInSec);
     }
 }
 
@@ -85,6 +86,48 @@ function displaySpecs() {
 	var duration = getMovieDurationInSeconds();
         document.getElementById("specs").innerHTML = "Length: " + duration + "<br>Current: " + current;
     }
+}
+
+function updatePartAndActivity(time) {
+    $.ajax({
+	type: "POST",
+	url: "db/getPartAndActivity.php",
+	data: "filename=" + videoFileName + "&time=" + time,
+	success: function(json){
+	    var response = eval("(" + json + ")");
+	    setPartButton(response.part);
+	    setActivityButton(response.activity);
+	}
+    });
+
+}
+
+function setPartButton(part) {
+    // uncolor all borders
+    $.each($(".partbutton"), function () {
+	var bordername = getBorderName(this.id);
+	$(bordername).css("border", "2px solid white");	
+    });
+    
+    if (part) {
+	var bordername = getBorderName(part);
+	$(bordername).css("border", "2px solid #ee0000");
+    }
+}
+
+
+function setActivityButton(activity) {
+    // uncolor all borders
+    $.each($(".activitybutton"), function () {
+	var bordername = getBorderName(this.id);
+	$(bordername).css("border", "2px solid white");	
+    });
+    
+    if (activity) {
+	var bordername = getBorderName(activity);
+	$(bordername).css("border", "2px solid #ee0000");
+    }
+
 }
 
 function updateTime() {
@@ -164,7 +207,7 @@ $(function() {
     initializeSlider($('#scrubber').get(0), $('#scrubberDisplay').get(0));
     setSliderChangeCallback(onScrubberChange);
     setScrubberValue(0);
- });
+});
 
 
 function setScrubberValue(v) {
@@ -199,180 +242,162 @@ function updateTable() {
 
 // Deletes entry with given ID from the database table
 function deleteId(id) {
-  var answer = confirm("Really delete tag with id " + id + "?");
-  if (answer) {
-    $.ajax({
-      type: "POST",
-      url: "db/deleteTagEntry.php",
-      data: "id=" + id,
-      success: function(html){
-        updateTable();
-      }
-    });
-  }
+    var answer = confirm("Really delete tag with id " + id + "?");
+    if (answer) {
+	$.ajax({
+	    type: "POST",
+	    url: "db/deleteTagEntry.php",
+	    data: "id=" + id,
+	    success: function(html){
+		updateTable();
+	    }
+	});
+    }
 }
 
 
-
-var curPartName = null
-var curActivityName = null
 
 
 // Some buttons with id $foo will have a div surrounding it
 // with name $foo_border
 function getBorderName(n) {
-return '#' + n + '_border';
+    return '#' + n + '_border';
 }
 
 
-function storeIntoDB(type, tag, attributes) {
-  // Optional fields:
-  if (!attributes) {
-    attributes = '';
-  }
-
-  // escape() needed for freeform text, right?
-  var researcher = escape($("#researcher").val());
-  var time = getCurrentPositionInSeconds();
-  var comment = escape($("#comment").val());
-
-  $.ajax({
-    type: "POST",
-    url: "db/storeTagData.php",
-    data: "researcher=" + researcher + "&filename=" + videoFileName + "&time=" + time + "&type=" + type + "&tag=" + tag + "&attributes=" + attributes + "&comment=" + comment,
-    success: function(html){
-      updateTable();
+function storeIntoDB(type, tag, attributes, comment) {
+    if (comment == null) {
+	comment = '';
     }
-  });
 
-  // Clear comments box after a successful submit to prevent
-  // contamination
-  $("#comment").val('');
+    // Optional fields:
+    if (!attributes) {
+	attributes = '';
+    }
+
+    // escape() needed for freeform text, right?
+    var researcher = escape($("#researcher").val());
+    var time = getCurrentPositionInSeconds();
+
+    $.ajax({
+	type: "POST",
+	url: "db/storeTagData.php",
+	data: "researcher=" + researcher + "&filename=" + videoFileName + "&time=" + time + "&type=" + type + "&tag=" + tag + "&attributes=" + attributes + "&comment=" + escape(comment),
+	success: function(html){
+	    updateTable();
+	}
+    });
+
 }
 
 
 $(document).ready(function() {
 
-// Set onclick handlers for all button types
+    // Set onclick handlers for all button types
 
-$(".partbutton").click(function() {
-  if (curPartName) {
-    // Do nothing if you repeatedly click on the same type:
-    if (curPartName == this.id) {
-      return;
-    }
+    $(".partbutton").click(function() {
+	var curPartName = this.id;
+	setPartButton(curPartName);
+	// Add an entry to the database
+	storeIntoDB('Part', curPartName, null, null);
+    });
+    
 
-    // Uncolor the old selection:
-    var old_bordername = getBorderName(curPartName);
-    $(old_bordername).css("border", "2px solid white");
-    curPartName = null
-  }
+    $(".activitybutton").click(function() {
+	var curActivityName = this.id
+	setActivityButton(curActivityName);
+	// Add an entry to the database
+	var comment = null;
+	if (curActivityName == "Other") {
+	    pauseMovie();
+	    comment = prompt('Describe the activity:');
+	}
+	
+	storeIntoDB('Activity', curActivityName, null, comment);
 
-  curPartName = this.id
-
-  var bordername = getBorderName(curPartName);
-  $(bordername).css("border", "2px solid #ee0000");
-
-  // Add an entry to the database
-  storeIntoDB('Part', curPartName, null);
-});
-
-
-$(".activitybutton").click(function() {
-  if (curActivityName) {
-    // Do nothing if you repeatedly click on the same type:
-    if (curActivityName == this.id) {
-      return;
-    }
-
-    // Uncolor the old selection:
-    var old_bordername = getBorderName(curActivityName);
-    $(old_bordername).css("border", "2px solid white");
-    curActivityName = null
-  }
-
-  curActivityName = this.id
-
-  var bordername = getBorderName(curActivityName);
-  $(bordername).css("border", "2px solid #ee0000")
-
-  // Add an entry to the database
-  storeIntoDB('Activity', curActivityName, null);
-});
+	if (curActivityName == "Other") {
+	    playMovie();
+	}
 
 
-$(".eventbutton").click(function() {
-  curEventName = this.id;
+    });
 
 
-  var attributes = null;
+    $(".eventbutton").click(function() {
+	pauseMovie();
 
-  var attrsArray = new Array();
+	var curEventName = this.id;
 
-  // Certain special events have attributes that we need to prompt for:
-  if (curEventName == "FixBug") {
-    var isLogicError = confirm("Logic error?");
-    var isSyntaxError = confirm("Syntax error?");
-    var isCopyPasteCode = confirm("Code came from copy/paste?");
-    var fixedRightAway = confirm("Fixed (almost) immediately?");
-    var knewRightAway = false;
-    if (!fixedRightAway) {
-      knewRightAway = confirm("Knew about it immediately (rather than do something else before realizing bug)?"); 
-    }
-    var isMetaprogrammingError = confirm("Meta-programming error?");
+	var attributes = null;
 
-    if (isLogicError) {
-      attrsArray.push("LogicError");
-    }
+	var attrsArray = new Array();
 
-    if (isSyntaxError) {
-      attrsArray.push("SyntaxError");
-    }
+	// Certain special events have attributes that we need to prompt for:
+	if (curEventName == "FixBug") {
+	    var isLogicError = confirm("Logic error?");
+	    var isSyntaxError = confirm("Syntax error?");
+	    var isCopyPasteCode = confirm("Code came from copy/paste?");
+	    var fixedRightAway = confirm("Fixed (almost) immediately?");
+	    var knewRightAway = false;
+	    if (!fixedRightAway) {
+		knewRightAway = confirm("Knew about it immediately (rather than do something else before realizing bug)?"); 
+	    }
+	    var isMetaprogrammingError = confirm("Meta-programming error?");
 
-    if (isCopyPasteCode) {
-      attrsArray.push("CopyPasteError");
-    }
+	    if (isLogicError) {
+		attrsArray.push("LogicError");
+	    }
 
-    if (fixedRightAway) {
-      attrsArray.push("FixedRightAway");
-    }
-    else {
-      if (knewRightAway) {
-        attrsArray.push("KnewRightAwayButFixedLater");
-      }
-      else {
-        attrsArray.push("FixedLater");
-      }
-    }
+	    if (isSyntaxError) {
+		attrsArray.push("SyntaxError");
+	    }
 
-    if (isMetaprogrammingError) {
-      attrsArray.push("MetaprogrammingError");
-    }
+	    if (isCopyPasteCode) {
+		attrsArray.push("CopyPasteError");
+	    }
 
-    attributes = attrsArray.join(',');
-  }
-  else if (curEventName == "InsertPrintStmt") {
-    var isPreemptive = confirm("Preemptive (before debugging)?");
-    var providesInfo = confirm("Provides info beyond simply 'got here'?");
+	    if (fixedRightAway) {
+		attrsArray.push("FixedRightAway");
+	    }
+	    else {
+		if (knewRightAway) {
+		    attrsArray.push("KnewRightAwayButFixedLater");
+		}
+		else {
+		    attrsArray.push("FixedLater");
+		}
+	    }
 
-    var attrsArray = new Array();
-    if (isPreemptive) {
-      attrsArray.push("Preemptive");
-    }
-    if (providesInfo) {
-      attrsArray.push("ProvidesInfo");
-    }
-    else {
-      attrsArray.push("GotHere");
-    }
+	    if (isMetaprogrammingError) {
+		attrsArray.push("MetaprogrammingError");
+	    }
 
-    attributes = attrsArray.join(',');
-  }
+	    attributes = attrsArray.join(',');
+	}
+	else if (curEventName == "InsertPrintStmt") {
+	    var isPreemptive = confirm("Preemptive (before debugging)?");
+	    var providesInfo = confirm("Provides info beyond simply 'got here'?");
 
+	    var attrsArray = new Array();
+	    if (isPreemptive) {
+		attrsArray.push("Preemptive");
+	    }
+	    if (providesInfo) {
+		attrsArray.push("ProvidesInfo");
+	    }
+	    else {
+		attrsArray.push("GotHere");
+	    }
 
-  // Add an entry to the database
-  storeIntoDB('Event', curEventName, attributes);
-});
+	    attributes = attrsArray.join(',');
+	}
+
+	comment = prompt('comment:');
+
+	// Add an entry to the database
+	storeIntoDB('Event', curEventName, attributes, comment);
+	playMovie();
+    });
 
 
 });
@@ -383,3 +408,11 @@ $(function() {
     setInterval(updateTime, 250);
 });
 
+function updatePartAndActivityCurrent() {
+    var current = getCurrentPositionInSeconds();
+    updatePartAndActivity(current);
+}
+
+$(function() {
+    setInterval(updatePartAndActivityCurrent, 5000);
+})

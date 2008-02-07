@@ -1,6 +1,8 @@
 // fortunecookie.js
 var playerWindow = null
 
+mouseover = false
+
 // TODO: this should have some sort of histeresis in case things fail
 function executeAfterWindowLoaded(callback, w) {
     if (w && w.document && w.document.isFinishedLoading) {
@@ -83,13 +85,22 @@ function displaySpecs() {
 }
 
 function updateTime() {
-    var current = getCurrentPositionInSeconds();
-    var duration = getMovieDurationInSeconds();
-    if (!current) current = 0;
-    if (!duration) duration = 1;
-    position = current * 800 / duration;
-    $('#time').text('' + formatTime(current) + ' (' + parseInt(current * 100 / duration) + '%)');
-    setScrubberValue(parseInt(position));
+    if (!mouseover) {
+	var current = getCurrentPositionInSeconds();
+	var duration = getMovieDurationInSeconds();
+	if (!current) current = 0;
+	if (!duration) duration = 1;
+	position = current * 800 / duration;
+	$('#time').text('' + formatTime(current) + ' (' + parseInt(current * 100 / duration) + '%)');
+	setScrubberValue(parseInt(position));
+    } else {
+	var current = $('#scrubberDisplay').get(0).value;
+	var duration = getMovieDurationInSeconds();
+	if (!current) current = 0;
+	if (!duration) duration = 1;
+	timeinseconds = current * duration / 800;
+	$('#time').text('' + formatTime(timeinseconds) + ' (' + parseInt(current * 100 / 800) + '%)');
+    }
 }
 
 function getCurrentPositionInSeconds() {
@@ -109,7 +120,7 @@ function getMovieDurationInSeconds() {
 }
 
 function formatTime(time) {
-    seconds = time % 60;
+    seconds = parseInt(time % 60);
     minutes = parseInt(time / 60);
     if (seconds < 10) {
 	return '' + minutes + ':0' + seconds;
@@ -162,6 +173,19 @@ function leadingZero(nr)
 {
     if (nr < 10) nr = "0" + nr;
     return nr;
+}
+
+
+function updateTable() {
+    var filename = $("#vidName").val()
+    $.ajax({
+	type: "POST",
+	url: "db/fetchTagData.php",
+	data: "filename=" + filename,
+	success: function(html){
+	    $("#tagtable").html(html)
+	}
+    });
 }
 
 $(function() {

@@ -115,6 +115,7 @@ ul,ol {
 }
 
 #tagtable {
+  font-size: 10pt;
   height: 800px;
   overflow: auto;
 }

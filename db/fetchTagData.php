@@ -14,28 +14,30 @@ if (!$result['success']) {
 
 ?>
 
-<table border=1>
+<table border=0>
 <tr>
-<td>id</td>
-<td>time</td>
-<td>type</td>
-<td>tag</td>
-<td>attributes</td>
-<td>comments</td>
+<td>Time</td>
+<td>Type</td>
+<td>Tag</td>
 <td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>ID</td>
+<td>Attributes</td>
+<td>Comments</td>
 </tr>
 
 <?php
 foreach ($result['data'] as $r) {
 ?>
 <tr>
-<td><?=$r['id']?></td>
 <td><?=$r['time']?></td>
 <td><?=$r['type']?></td>
 <td><?=$r['tag']?></td>
+<td><input type="button" value="Jump" onClick="gotoSpot(<?=$r['time']?>);"></td>
+<td><input type="button" value="Del" onClick="deleteId(<?=$r['id']?>);"></td>
+<td><?=$r['id']?></td>
 <td><?=$r['attributes']?></td>
 <td><?=$r['comments']?></td>
-<td><input type="button" value="J" onClick="gotoSpot(<?=$r['time']?>);">&nbsp<input type="button" value="D" onClick="deleteId(<?=$r['id']?>);"></td>
 </tr>
 <?php
     }

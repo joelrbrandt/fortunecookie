@@ -50,7 +50,7 @@ function createPlayerWindow(url) {
 }
 
 function finishCreatePlayerWindow(w) {
-    console.log("Opened!")
+    w;
 }
 
 function getFlashMovie(movieName) {

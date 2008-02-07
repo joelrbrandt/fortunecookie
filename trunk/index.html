@@ -8,82 +8,39 @@
     <script type="text/javascript" src="js/jquery-1.2.1.js"></script>
     <script type="text/javascript" src="js/slider.js"></script>
     <script type="text/javascript" src="js/fortunecookie.js"></script>
-    <script type="text/javascript">
 
-      var curPartName = null
-      var curActivityName = null
-
-
-      function getBorderName(n) {
-      return '#' + n + '_border';
-      }
-
-      $(document).ready(function() {
-
-      $(".partbutton").click(function() {
-      // Uncolor the old selection:
-      if (curPartName) {
-      var old_bordername = getBorderName(curPartName);
-      $(old_bordername).css("border", "2px solid white");
-      curPartName = null
-      }
-
-      curPartName = this.id
-
-      var bordername = getBorderName(curPartName);
-      $(bordername).css("border", "2px solid #ee0000");
-      });
-
-
-      $(".activitybutton").click(function() {
-      // Uncolor the old selection:
-      if (curActivityName) {
-      var old_bordername = getBorderName(curActivityName);
-      $(old_bordername).css("border", "2px solid white");
-      curActivityName = null
-      }
-
-      curActivityName = this.id
-
-      var bordername = getBorderName(curActivityName);
-      $(bordername).css("border", "2px solid #ee0000")
-      });
-
-
-      $(".eventbutton").click(function() {
-      curEventName = this.id;
-      });
-
-
-      });
-
-
-    </script>
   </head>
 
   <body>
 
     <center><h1>Fortune Cookie!</h1></center>
-    <a href="#" onclick="createPlayerWindow('player.html')">Open the player window</a>
     <!--
-    <input type="button" onClick="pauseMovie()" value="Pause">
-    <input type="button" onClick="playMovie()" value="Play">
     <input type="button" onClick="gotoSpot(30)" value="Goto 30 seconds">
     <input type="button" onClick="gotoSpot(600)" value="Goto 10 min">
     <input type="button" onClick="displaySpecs()" value="Find the size">
     <br>
     -->
-    <p>Domain: <input id="domain" type=text size=30 value="http://hci.stanford.edu/jbrandt/temp/stream/">
-      Vid Name: <input id="vidName" type=text size=30 value="s1.flv">
-      <input type="button" onClick="switchVideoButton()" value="Switch!">
-      Researcher: <input id="researcher" type=text size=30 value="nobody">
+
+    <a href="#" onclick="createPlayerWindow('player.html')">Open the player window</a>
+
+    <p/>
+
+    Domain: <input id="domain" type=text size=20 value="http://hci.stanford.edu/jbrandt/temp/stream/">
+    Video Name: <input id="vidName" type=text size=20 value="s1.flv">
+      <input type="button" onClick="switchVideoButton()" value="Load Video">
     <br>
 
     <p>
-    <div id=specs> </div>
+    <div id=specs> 
+      Researcher: <input id="researcher" type=text size=20 value="nobody">
+    <input type="button" id="pausebutton" onClick="pauseMovie()" value="Play/Pause" />
+
+    </div>
+
     <div id='content'></div>
 
     <!-- http://carpe.ambiprospect.com/slider/ -->
+
 
     <div class="carpe_horizontal_slider_display_combo">
       <div class="carpe_slider_display_holder" style="visibility: hidden; width: 0px;">
@@ -110,19 +67,19 @@
 		  
 		  Part:
 		  
-		  <div class="buttonborder" id="Part_Model_border">
-		    <input type="button" id="Part_Model" class="partbutton" value="Model" />
+		  <div class="buttonborder" id="Model_border">
+		    <input type="button" id="Model" class="partbutton" value="Model" />
 		  </div>
 
-		  <div class="buttonborder" id="Part_View_border">
-		    <input type="button" id="Part_View" class="partbutton" value="View" />
+		  <div class="buttonborder" id="View_border">
+		    <input type="button" id="View" class="partbutton" value="View" />
 		  </div>
 
-		  <div class="buttonborder" id="Part_Controller_border">
-		    <input type="button" id="Part_Controller" class="partbutton" value="Controller" />
+		  <div class="buttonborder" id="Controller_border">
+		    <input type="button" id="Controller" class="partbutton" value="Controller" />
 		  </div>
 
-		  <div class="buttonborder" id="Part_Foundation_border"> <input type="button" id="Part_Foundation" class="partbutton" value="Foundation" />
+		  <div class="buttonborder" id="Foundation_border"> <input type="button" id="Foundation" class="partbutton" value="Foundation" />
 		  </div>
 
 		</td>
@@ -133,40 +90,40 @@
 
 		  Activity:
 
-		  <div class="buttonborder" id="Activity_AddNew_border">
-		    <input type="button" id="Activity_AddNew" class="activitybutton" value="Adding new functionality" />
+		  <div class="buttonborder" id="AddNewFunc_border">
+		    <input type="button" id="AddNewFunc" class="activitybutton" value="Adding new functionality" />
 		  </div>
 
-		  <div class="buttonborder" id="Activity_Web_border">
-		    <input type="button" id="Activity_Web" class="activitybutton" value="On the Web" />
+		  <div class="buttonborder" id="Web_border">
+		    <input type="button" id="Web" class="activitybutton" value="On the Web" />
 		  </div>
 
-		  <div class="buttonborder" id="Activity_Test_border">
-		    <input type="button" id="Activity_Test" class="activitybutton" value="Testing" />
+		  <div class="buttonborder" id="Testing_border">
+		    <input type="button" id="Testing" class="activitybutton" value="Testing" />
 		  </div>
 
-		  <div class="buttonborder" id="Activity_Debug_border">
-		    <input type="button" id="Activity_Debug" class="activitybutton" value="Debugging" />
+		  <div class="buttonborder" id="Debugging_border">
+		    <input type="button" id="Debugging" class="activitybutton" value="Debugging" />
 		  </div>
 
-		  <div class="buttonborder" id="Activity_Planning_border">
-		    <input type="button" id="Activity_Planning" class="activitybutton" value="Planning" />
+		  <div class="buttonborder" id="Planning_border">
+		    <input type="button" id="Planning" class="activitybutton" value="Planning" />
 		  </div>
 
-		  <div class="buttonborder" id="Activity_ExistingCodebase_border">
-		    <input type="button" id="Activity_ExistingCodebase" class="activitybutton" value="Sensemaking in existing code" />
+		  <div class="buttonborder" id="ExistingCodebaseSensemaking_border">
+		    <input type="button" id="ExistingCodebaseSensemaking" class="activitybutton" value="Sensemaking in existing code" />
 
 		  </div>
-		  <div class="buttonborder" id="Activity_ToolSetup_border">
-		    <input type="button" id="Activity_ToolSetup" class="activitybutton" value="Setting up tools" />
+		  <div class="buttonborder" id="ToolSetup_border">
+		    <input type="button" id="ToolSetup" class="activitybutton" value="Setting up tools" />
 		  </div>
 
-		  <div class="buttonborder" id="Activity_Researcher_border">
-		    <input type="button" id="Activity_Researcher" class="activitybutton" value="Interacting w/ Researcher" />
+		  <div class="buttonborder" id="Researcher_border">
+		    <input type="button" id="Researcher" class="activitybutton" value="Interacting w/ Researcher" />
 		  </div>
 
-		  <div class="buttonborder" id="Activity_Other_border">
-		    <input type="button" id="Activity_Other" class="activitybutton" value="Other" />
+		  <div class="buttonborder" id="Other_border">
+		    <input type="button" id="Other" class="activitybutton" value="Other" />
 		  </div>
 
 		</td>
@@ -262,8 +219,10 @@
 	  </td>
 
 	  <td valign="top">
-	    <input type="button" value="." onClick="updateTable();">
+      <div id="tagtable_title"></div>
+
 	    <div id="tagtable">&nbsp;</div>
+
 	  </td>
 
 

@@ -6,8 +6,8 @@ $result = Array();
 
 try {
   $dbh = connectToDb();
-  $stmt = $dbh->prepare("DELETE FROM FLVTags where uniqueID=?");
-  if ($stmt->execute(Array($_POST['uniqueID']))) {
+  $stmt = $dbh->prepare("DELETE FROM tags where id=?");
+  if ($stmt->execute(Array($_POST['id']))) {
         $result['success'] = True;
   }
   else {

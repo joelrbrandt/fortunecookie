@@ -1,6 +1,9 @@
 // fortunecookie.js
 var playerWindow = null
 
+// set in switchVideo()
+var videoFileName = null
+
 mouseover = false
 
 // TODO: this should have some sort of histeresis in case things fail
@@ -141,6 +144,10 @@ function switchVideo(domain, filename) {
     playerWindow.metadataUnloaded();
     getFlashMovie("myScrubber").setDomain(domain);
     getFlashMovie("myScrubber").setFilename(filename);
+
+    // Update the table for the current video name:
+    videoFileName = $("#vidName").val();
+    updateTable();
 }
 
 function onScrubberChange(value, slider) {
@@ -176,18 +183,123 @@ function leadingZero(nr)
 }
 
 
+// Redraws the entire table of tags
 function updateTable() {
-    var filename = $("#vidName").val()
+    $("#tagtable_title").html("Existing tags for " + videoFileName);
+
     $.ajax({
 	type: "POST",
 	url: "db/fetchTagData.php",
-	data: "filename=" + filename,
+	data: "filename=" + videoFileName,
 	success: function(html){
 	    $("#tagtable").html(html)
 	}
     });
 }
 
+// Deletes entry with given ID from the database table
+function deleteId(id) {
+  var answer = confirm("Really delete tag with id " + id + "?");
+  if (answer) {
+    $.ajax({
+      type: "POST",
+      url: "db/deleteTagEntry.php",
+      data: "id=" + id,
+      success: function(html){
+        updateTable();
+      }
+    });
+  }
+}
+
+
+
+var curPartName = null
+var curActivityName = null
+
+
+// Some buttons with id $foo will have a div surrounding it
+// with name $foo_border
+function getBorderName(n) {
+return '#' + n + '_border';
+}
+
+
+function storeIntoDB(type, tag, attributes, comment) {
+  // Optional fields:
+  if (!comment) {
+    comment = '';
+  }
+  if (!attributes) {
+    attributes = '';
+  }
+
+  var researcher = $("#researcher").val();
+  var time = getCurrentPositionInSeconds();
+
+  $.ajax({
+    type: "POST",
+    url: "db/storeTagData.php",
+    data: "researcher=" + researcher + "&filename=" + videoFileName + "&time=" + time + "&type=" + type + "&tag=" + tag + "&attributes=" + attributes + "&comment=" + comment,
+    success: function(html){
+      updateTable();
+    }
+  });
+
+  researcher
+}
+
+
+$(document).ready(function() {
+
+// Set onclick handlers for all button types
+
+$(".partbutton").click(function() {
+  // Uncolor the old selection:
+  if (curPartName) {
+    var old_bordername = getBorderName(curPartName);
+    $(old_bordername).css("border", "2px solid white");
+    curPartName = null
+  }
+
+  curPartName = this.id
+
+  var bordername = getBorderName(curPartName);
+  $(bordername).css("border", "2px solid #ee0000");
+
+  // Add an entry to the database
+  storeIntoDB('Part', curPartName, null, null);
+});
+
+
+$(".activitybutton").click(function() {
+  // Uncolor the old selection:
+  if (curActivityName) {
+    var old_bordername = getBorderName(curActivityName);
+    $(old_bordername).css("border", "2px solid white");
+    curActivityName = null
+  }
+
+  curActivityName = this.id
+
+  var bordername = getBorderName(curActivityName);
+  $(bordername).css("border", "2px solid #ee0000")
+
+  // Add an entry to the database
+  storeIntoDB('Activity', curActivityName, null, null);
+});
+
+
+$(".eventbutton").click(function() {
+  curEventName = this.id;
+});
+
+
+});
+
+
+
 $(function() {
     setInterval(updateTime, 250);
 });
+

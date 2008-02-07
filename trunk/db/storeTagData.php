@@ -3,15 +3,14 @@
 
 require_once('dbLibrary.php');
 
-$sql = "INSERT INTO FLVTags (`uniqueID`, `filename`, `authorName`, `eventType`, `eventSubType`, `eventID`, `annotation`, `startTime`, `endTime`) VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?);";
-$params = Array($_POST['filename'],
-		$_POST['authorName'],
-		$_POST['eventType'],
-		$_POST['eventSubType'],
-		$_POST['eventID'],
-		$_POST['annotation'],
-		$_POST['startTime'],
-		$_POST['endTime']);
+$sql = "INSERT INTO tags (`id`, `researcher`, `filename`, `time`, `type`, `tag`, `attributes`, `comment`) VALUES (null, ?, ?, ?, ?, ?, ?, ?);";
+$params = Array($_POST['researcher'],
+		$_POST['filename'],
+		$_POST['time'],
+		$_POST['type'],
+		$_POST['tag'],
+		$_POST['attributes'],
+		$_POST['comment']);
 
 echo executeQueryAndReturnJSON($sql, $params);
 

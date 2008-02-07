@@ -12,6 +12,17 @@ if (!$result['success']) {
  }
 
 
+// Format the time to be in minutes/seconds
+function formatTime($timeInSecs) {
+  $seconds = (int)($timeInSecs % 60);
+  $minutes = (int)($timeInSecs / 60);
+    if ($seconds < 10) {
+	return '' . $minutes . ':0' . $seconds;
+    } else {
+	return '' . $minutes . ':' . $seconds;
+    }
+}
+
 ?>
 
 <table border=0>
@@ -23,21 +34,23 @@ if (!$result['success']) {
 <td>&nbsp;</td>
 <td>ID</td>
 <td>Attributes</td>
-<td>Comments</td>
+<td>Comment</td>
+<td>Researcher</td>
 </tr>
 
 <?php
 foreach ($result['data'] as $r) {
 ?>
 <tr>
-<td><?=$r['time']?></td>
+<td><?=formatTime($r['time'])?></td>
 <td><?=$r['type']?></td>
 <td><?=$r['tag']?></td>
 <td><input type="button" value="Jump" onClick="gotoSpot(<?=$r['time']?>);"></td>
 <td><input type="button" value="Del" onClick="deleteId(<?=$r['id']?>);"></td>
 <td><?=$r['id']?></td>
 <td><?=$r['attributes']?></td>
-<td><?=$r['comments']?></td>
+<td><?=$r['comment']?></td>
+<td><?=$r['researcher']?></td>
 </tr>
 <?php
     }

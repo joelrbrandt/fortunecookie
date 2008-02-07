@@ -225,17 +225,16 @@ return '#' + n + '_border';
 }
 
 
-function storeIntoDB(type, tag, attributes, comment) {
+function storeIntoDB(type, tag, attributes) {
   // Optional fields:
-  if (!comment) {
-    comment = '';
-  }
   if (!attributes) {
     attributes = '';
   }
 
-  var researcher = $("#researcher").val();
+  // escape() needed for freeform text, right?
+  var researcher = escape($("#researcher").val());
   var time = getCurrentPositionInSeconds();
+  var comment = escape($("#comment").val());
 
   $.ajax({
     type: "POST",
@@ -246,7 +245,9 @@ function storeIntoDB(type, tag, attributes, comment) {
     }
   });
 
-  researcher
+  // Clear comments box after a successful submit to prevent
+  // contamination
+  $("#comment").val('');
 }
 
 
@@ -255,8 +256,13 @@ $(document).ready(function() {
 // Set onclick handlers for all button types
 
 $(".partbutton").click(function() {
-  // Uncolor the old selection:
   if (curPartName) {
+    // Do nothing if you repeatedly click on the same type:
+    if (curPartName == this.id) {
+      return;
+    }
+
+    // Uncolor the old selection:
     var old_bordername = getBorderName(curPartName);
     $(old_bordername).css("border", "2px solid white");
     curPartName = null
@@ -273,8 +279,13 @@ $(".partbutton").click(function() {
 
 
 $(".activitybutton").click(function() {
-  // Uncolor the old selection:
   if (curActivityName) {
+    // Do nothing if you repeatedly click on the same type:
+    if (curActivityName == this.id) {
+      return;
+    }
+
+    // Uncolor the old selection:
     var old_bordername = getBorderName(curActivityName);
     $(old_bordername).css("border", "2px solid white");
     curActivityName = null

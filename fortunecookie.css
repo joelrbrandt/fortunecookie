@@ -39,38 +39,6 @@ ul,ol {
   list-style-type:square; 
 }
 
-/*#wrapper { width: 780px; padding: 40px; text-align:left; margin:0 auto; background-color:#FFF;}*/
-
-#lead { 
-  font-weight: bold; 
-  font-style: italic; 
-  margin-bottom: 40px; 
-}
-
-/*#player { float: right; }*/
-
-#pid { 
-  margin: 8px 0 0 0; 
-}
-
-#activeEventsDiv {
-  border-top: 1px;
-}
-
-.activeEvent {
-  margin: 5px 5px 5px 5px;
-  padding: 5px 5px 5px 5px;
-  border: 1px solid #cccccc;
-  font-size: 10pt;
-}
-
-.completedEvent {
-  margin: 5px 5px 5px 5px;
-  padding: 5px 5px 5px 5px;
-  border: 1px solid #cccccc;
-  font-size: 10pt;
-  width: 150px;
-}
 
 .partbutton {
   width: 200px;
@@ -83,39 +51,18 @@ ul,ol {
 }
 
 .eventbutton {
-  width: 200px;
-  height: 40px;
+  font-size: 8pt;
+  width: 260px;
+  height: 30px;
 }
 
 .buttonborder {
-  margin-bottom: 3px;
-  width: 200px;
-  border: 2px solid white;
-}
-
-.partbutton {
-  width: 200px;
-  height: 40px;
-}
-
-.activitybutton {
-  width: 200px;
-  height: 40px;
-}
-
-.eventbutton {
-  width: 200px;
-  height: 40px;
-}
-
-.buttonborder {
-  margin-bottom: 3px;
+  margin-bottom: 0px;
   width: 200px;
   border: 2px solid white;
 }
 
 #tagtable {
-  font-size: 10pt;
-  height: 800px;
+  height: 600px;
   overflow: auto;
 }

@@ -16,21 +16,22 @@ body {
 var mdLoaded = false;
 
 function videoStopped() {
-	alert("Video stopped");
+    alert("Video stopped");
 }
 
 function videoStarted() {
-    console.log("Video started");
+    true;
+    // console.log("Video started");
 }
 
 function metadataLoaded() {
     mdLoaded = true;
-    console.log("Metadata loaded");
+    // console.log("Metadata loaded");
     resizeVideoToWindow()
 }
 
 function metadataUnloaded() {
-    console.log("Metadata unloaded");
+    // console.log("Metadata unloaded");
     mdLoaded = false;
 }
 
@@ -53,7 +54,7 @@ function resizeVideo(width, height) {
 	newHeight = width / aspect
     }
     
-    console.log("resizing movie to: " + newWidth + ", " + newHeight);
+    // console.log("resizing movie to: " + newWidth + ", " + newHeight);
 
     $("#myScrubber").attr("width", newWidth);
     $("#myScrubberEmbed").attr("width", newWidth);

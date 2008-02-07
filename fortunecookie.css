@@ -3,6 +3,11 @@
   Created by Philip Guo on 2007-12-10
 */
 
+table.tags td {
+	border:thin solid rgb(0,0,0);
+	padding: 1px;
+}
+
 body {
   color:#000; 
   font: 10pt verdana, arial, sans-serif; 

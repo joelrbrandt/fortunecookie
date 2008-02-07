@@ -25,7 +25,7 @@ function formatTime($timeInSecs) {
 
 ?>
 
-<table border=0>
+<table class="tags">
 <tr>
 <td>Time</td>
 <td>Type</td>

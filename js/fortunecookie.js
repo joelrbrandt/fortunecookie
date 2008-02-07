@@ -274,7 +274,7 @@ $(".partbutton").click(function() {
   $(bordername).css("border", "2px solid #ee0000");
 
   // Add an entry to the database
-  storeIntoDB('Part', curPartName, null, null);
+  storeIntoDB('Part', curPartName, null);
 });
 
 
@@ -297,12 +297,81 @@ $(".activitybutton").click(function() {
   $(bordername).css("border", "2px solid #ee0000")
 
   // Add an entry to the database
-  storeIntoDB('Activity', curActivityName, null, null);
+  storeIntoDB('Activity', curActivityName, null);
 });
 
 
 $(".eventbutton").click(function() {
   curEventName = this.id;
+
+
+  var attributes = null;
+
+  var attrsArray = new Array();
+
+  // Certain special events have attributes that we need to prompt for:
+  if (curEventName == "FixBug") {
+    var isLogicError = confirm("Logic error?");
+    var isSyntaxError = confirm("Syntax error?");
+    var isCopyPasteCode = confirm("Code came from copy/paste?");
+    var fixedRightAway = confirm("Fixed (almost) immediately?");
+    var knewRightAway = false;
+    if (!fixedRightAway) {
+      knewRightAway = confirm("Knew about it immediately (rather than do something else before realizing bug)?"); 
+    }
+    var isMetaprogrammingError = confirm("Meta-programming error?");
+
+    if (isLogicError) {
+      attrsArray.push("LogicError");
+    }
+
+    if (isSyntaxError) {
+      attrsArray.push("SyntaxError");
+    }
+
+    if (isCopyPasteCode) {
+      attrsArray.push("CopyPasteError");
+    }
+
+    if (fixedRightAway) {
+      attrsArray.push("FixedRightAway");
+    }
+    else {
+      if (knewRightAway) {
+        attrsArray.push("KnewRightAwayButFixedLater");
+      }
+      else {
+        attrsArray.push("FixedLater");
+      }
+    }
+
+    if (isMetaprogrammingError) {
+      attrsArray.push("MetaprogrammingError");
+    }
+
+    attributes = attrsArray.join(',');
+  }
+  else if (curEventName == "InsertPrintStmt") {
+    var isPreemptive = confirm("Preemptive (before debugging)?");
+    var providesInfo = confirm("Provides info beyond simply 'got here'?");
+
+    var attrsArray = new Array();
+    if (isPreemptive) {
+      attrsArray.push("Preemptive");
+    }
+    if (providesInfo) {
+      attrsArray.push("ProvidesInfo");
+    }
+    else {
+      attrsArray.push("GotHere");
+    }
+
+    attributes = attrsArray.join(',');
+  }
+
+
+  // Add an entry to the database
+  storeIntoDB('Event', curEventName, attributes);
 });
 
 

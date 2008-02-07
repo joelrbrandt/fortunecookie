@@ -25,17 +25,13 @@
 
     <p/>
 
+    <input type="button" id="pausebutton" onClick="pauseMovie()" value="Play/Pause" />
+
     Domain: <input id="domain" type=text size=20 value="http://hci.stanford.edu/jbrandt/temp/stream/">
     Video Name: <input id="vidName" type=text size=20 value="s1.flv">
       <input type="button" onClick="switchVideoButton()" value="Load Video">
     <br>
 
-    <p>
-    <div id=specs> 
-      Researcher: <input id="researcher" type=text size=20 value="nobody">
-    <input type="button" id="pausebutton" onClick="pauseMovie()" value="Play/Pause" />
-
-    </div>
 
     <div id='content'></div>
 
@@ -54,6 +50,12 @@
       Time: <span id="time">0:00</span></p>
     </div>
 
+    <p>
+    <div id=specs> 
+      Researcher: <input id="researcher" type=text size=20 value="nobody">
+      Comment: <input id="comment" type=text size=60 value="">
+    </div>
+
     <div style="clear: both">
       <table border="0" cellpadding="10">
 
@@ -65,7 +67,10 @@
 	      <tr>
 		<td valign="top">
 		  
-		  Part:
+      <!-- VERY IMPORTANT THAT THE BORDER AND BUTTON ID NAMES MATCH,
+      MODULO THE '_border' SUFFIX!!! -->
+
+      <p/>Part:
 		  
 		  <div class="buttonborder" id="Model_border">
 		    <input type="button" id="Model" class="partbutton" value="Model" />
@@ -88,14 +93,13 @@
 	      <tr>
 		<td valign="top">
 
-		  Activity:
+      <!-- VERY IMPORTANT THAT THE BORDER AND BUTTON ID NAMES MATCH,
+      MODULO THE '_border' SUFFIX!!! -->
 
-		  <div class="buttonborder" id="AddNewFunc_border">
-		    <input type="button" id="AddNewFunc" class="activitybutton" value="Adding new functionality" />
-		  </div>
+      <p/>Activity:
 
-		  <div class="buttonborder" id="Web_border">
-		    <input type="button" id="Web" class="activitybutton" value="On the Web" />
+		  <div class="buttonborder" id="AddNewFunctionality_border">
+		    <input type="button" id="AddNewFunctionality" class="activitybutton" value="Adding new functionality" />
 		  </div>
 
 		  <div class="buttonborder" id="Testing_border">
@@ -106,20 +110,26 @@
 		    <input type="button" id="Debugging" class="activitybutton" value="Debugging" />
 		  </div>
 
-		  <div class="buttonborder" id="Planning_border">
-		    <input type="button" id="Planning" class="activitybutton" value="Planning" />
+		  <div class="buttonborder" id="SearchingReadingWeb_border">
+		    <input type="button" id="SearchingReadingWeb"
+        class="activitybutton" value="Searching/reading on web" />
 		  </div>
 
-		  <div class="buttonborder" id="ExistingCodebaseSensemaking_border">
-		    <input type="button" id="ExistingCodebaseSensemaking" class="activitybutton" value="Sensemaking in existing code" />
-
+		  <div class="buttonborder" id="SensemakingInExistingCode_border">
+		    <input type="button" id="SensemakingInExistingCode" class="activitybutton" value="Sensemaking in existing code" />
 		  </div>
+
 		  <div class="buttonborder" id="ToolSetup_border">
 		    <input type="button" id="ToolSetup" class="activitybutton" value="Setting up tools" />
 		  </div>
 
-		  <div class="buttonborder" id="Researcher_border">
-		    <input type="button" id="Researcher" class="activitybutton" value="Interacting w/ Researcher" />
+		  <div class="buttonborder" id="Planning_border">
+		    <input type="button" id="Planning" class="activitybutton" value="Planning" />
+		  </div>
+
+
+		  <div class="buttonborder" id="InteractWithResearcher_border">
+		    <input type="button" id="InteractWithResearcher" class="activitybutton" value="Interacting w/ researcher" />
 		  </div>
 
 		  <div class="buttonborder" id="Other_border">
@@ -132,88 +142,97 @@
 
 	  </td>
 
-	  <td valign="top">
+	  <td valign="top" width="280px">
 
-	    Event:
+      <p/>Execution-related events:
 
-	    <div class="buttonborder" id="Event_PickNose_border">
-	      <input type="button" id="Event_PickNose" class="eventbutton"
-		     value="Picking Nose" />
+      <div class="buttonborder">
+	      <input type="button" id="BugFix" class="eventbutton"
+		     value="Fix bug" />
 	    </div>
 
-	    <div class="buttonborder" id="Event_ScratchButt_border">
-	      <input type="button" id="Event_ScratchButt" class="eventbutton"
-		     value="Scratching Butt" />
+      <div class="buttonborder">
+	      <input type="button" id="GiveUpOnBug" class="eventbutton"
+		     value="Give up on bug/trying new approach" />
 	    </div>
 
-	    <div class="buttonborder" id="Event_SniffArmpits_border">
-	      <input type="button" id="Event_SniffArmpits" class="eventbutton"
-		     value="Sniffing Armpits" />
+      <div class="buttonborder">
+	      <input type="button" id="InsertPrintln" class="eventbutton"
+		     value="Insert print statement" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+      <div class="buttonborder">
+	      <input type="button" id="UnsureOfWhatsExecuting" class="eventbutton"
+		     value="Think code is executing (or unsure) but it's not" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+
+      <p/>Web interaction events:
+
+      <div class="buttonborder">
+	      <input type="button" id="WebSearch" class="eventbutton"
+		     value="Performing web search (put terms & goal in comment)" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+      <div class="buttonborder">
+	      <input type="button" id="WebReadingOfficialDoc" class="eventbutton"
+		     value="Reading official web documentation" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+      <div class="buttonborder">
+	      <input type="button" id="WebReadingTutorial" class="eventbutton"
+		     value="Reading tutorial webpage" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+      <div class="buttonborder">
+	      <input type="button" id="WebReadingForumOrBlog" class="eventbutton"
+		     value="Reading web forum or blog" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+      <div class="buttonborder">
+	      <input type="button" id="WebReadingPageWithFeature" class="eventbutton"
+		     value="Reading a webpage containing desired feature" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+
+      <p/>Code foraging events:
+
+      <div class="buttonborder">
+	      <input type="button" id="CopyCode" class="eventbutton"
+		     value="Copy code (put source & num. lines in comment)" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+      <div class="buttonborder">
+	      <input type="button" id="SearchThruExistingCode" class="eventbutton"
+		     value="Searching in own existing code (put goal in comment)" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+
+      <p/>Other (usually verbal) events:
+
+      <div class="buttonborder">
+	      <input type="button" id="MakingLanguageAnalogy" class="eventbutton"
+		     value="Making an analogy to another language" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+      <div class="buttonborder">
+	      <input type="button" id="Satisficing" class="eventbutton"
+		     value="Satisficing ('probably a better way but whatever')" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+      <div class="buttonborder">
+	      <input type="button" id="NotSatisficing" class="eventbutton"
+		     value="Not Satisficing ('i gotta do it the right way')" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+      <div class="buttonborder">
+	      <input type="button" id="LearningByDoing" class="eventbutton"
+		     value="Learning by doing" />
 	    </div>
 
-	    <div class="buttonborder" id="">
-	      <input type="button" id="" class="eventbutton"
-		     value="Blah event" />
+      <div class="buttonborder">
+	      <input type="button" id="Procrastination" class="eventbutton"
+		     value="Procrastination" />
 	    </div>
 
 	  </td>

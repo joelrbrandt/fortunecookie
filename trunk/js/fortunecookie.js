@@ -80,6 +80,26 @@ function gotoSpot(timeInSec) {
     }
 }
 
+function gotoTimePrompt() {
+    var strTime = prompt("what time? format M:SS");
+    if (strTime) {
+	s = strTime.split(':');
+	if (s.length != 2) {
+	    alert("not the right format!");
+	} else {
+	    min = parseInt(s[0]);
+	    sec = parseInt(s[1]);
+	    if (!(min >= 0 && sec >= 0)) {
+		alert("ENTER POSITIVE NUMBERS!");
+	    } else {
+		totalSeconds = min * 60 + sec;
+		gotoSpot(totalSeconds);
+	    }
+	}
+    }
+
+}
+
 function displaySpecs() {
     if(playerWindow && playerWindow.mdLoaded) {
 	var current = getCurrentPositionInSeconds();

@@ -43,14 +43,14 @@ foreach ($result['data'] as $r) {
 ?>
 <tr>
 <td><?=formatTime($r['time'])?></td>
-<td><?=$r['type']?></td>
-<td><?=$r['tag']?></td>
+		<td><?=htmlspecialchars($r['type'])?></td>
+		<td><?=htmlspecialchars($r['tag'])?></td>
 <td><input type="button" value="Jump" onClick="gotoSpot(<?=$r['time']?>);"></td>
 <td><input type="button" value="Del" onClick="deleteId(<?=$r['id']?>);"></td>
-<td><?=$r['id']?></td>
-<td><?=$r['attributes']?></td>
-<td><?=$r['comment']?></td>
-<td><?=$r['researcher']?></td>
+		<td><?=htmlspecialchars($r['id'])?></td>
+		<td><?=htmlspecialchars($r['attributes'])?></td>
+		<td><?=htmlspecialchars($r['comment'])?></td>
+		<td><?=htmlspecialchars($r['researcher'])?></td>
 </tr>
 <?php
     }
